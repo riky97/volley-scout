@@ -47,11 +47,15 @@ export function ActionPad({
             {LIVE.numberBuffer(numberBuffer)}
           </span>
         )}
-        {(selectedPlayerId !== null || selectedSkill !== null) && (
-          <button type="button" className={styles.cancel} onClick={onCancel}>
-            {LIVE.cancelSelection}
-          </button>
-        )}
+        {/* Always rendered, so choosing a player never shifts the buttons under the cursor. */}
+        <button
+          type="button"
+          className={styles.cancel}
+          disabled={selectedPlayerId === null && selectedSkill === null}
+          onClick={onCancel}
+        >
+          {LIVE.cancelSelection}
+        </button>
       </header>
 
       <p className={styles.hint}>{LIVE.padHint}</p>

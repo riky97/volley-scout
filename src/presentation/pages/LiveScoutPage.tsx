@@ -28,6 +28,16 @@ export function LiveScoutPage(): React.JSX.Element {
   const snapshot = useMatchStore((state) => state.snapshot);
   const settings = useSettingsStore((state) => state.settings);
 
+  const resumeLastMatch = useMatchStore((state) => state.resumeLastMatch);
+
+  // Landing here with an empty store means the window was reloaded (or the app crashed) while a
+  // match was open: pull the last unfinished match back in instead of showing a dead screen.
+  const hasMatch = match !== null;
+  useEffect(() => {
+    if (!hasMatch) void resumeLastMatch();
+  }, [hasMatch, resumeLastMatch]);
+
+
   const [selectedPlayerId, setSelectedPlayerId] = useState<Id | null>(null);
   const [selectedSkill, setSelectedSkill] = useState<Skill | null>(null);
   const [numberBuffer, setNumberBuffer] = useState('');
@@ -37,14 +47,21 @@ export function LiveScoutPage(): React.JSX.Element {
   const [endSetRequested, setEndSetRequested] = useState(false);
   /** Score at which the operator dismissed the automatic set-end dialog. */
   const [endSetDismissedAt, setEndSetDismissedAt] = useState<string | null>(null);
-  const [endMatchOpen, setEndMatchOpen] = useState(false);
+  /** Set to true when the operator dismisses the end-of-set prompt to stay on this screen. */
+  const [nextStepDismissed, setNextStepDismissed] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
 
   const bufferTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // The buffer is mirrored in a ref so a keystroke can commit it and act on the result in the
+  // same event, without waiting for a re-render.
+  const bufferRef = useRef('');
+
+
   const resetSelection = useCallback(() => {
     setSelectedPlayerId(null);
     setSelectedSkill(null);
+    bufferRef.current = '';
     setNumberBuffer('');
   }, []);
 
@@ -71,27 +88,32 @@ export function LiveScoutPage(): React.JSX.Element {
     [],
   );
 
+  const setBuffer = useCallback((value: string) => {
+    bufferRef.current = value;
+    setNumberBuffer(value);
+  }, []);
+
   const commitNumberBuffer = useCallback(() => {
     if (bufferTimer.current !== null) {
       clearTimeout(bufferTimer.current);
       bufferTimer.current = null;
     }
-    setNumberBuffer((buffer) => {
-      if (buffer === '' || match === null) return '';
-      const shirt = Number.parseInt(buffer, 10);
-      const player = match.roster.find((candidate) => candidate.shirtNumber === shirt);
-      if (player !== undefined) setSelectedPlayerId(player.id);
-      return '';
-    });
-  }, [match]);
+    const buffer = bufferRef.current;
+    setBuffer('');
+    if (buffer === '' || match === null) return;
+    const shirt = Number.parseInt(buffer, 10);
+    const player = match.roster.find((candidate) => candidate.shirtNumber === shirt);
+    if (player !== undefined) setSelectedPlayerId(player.id);
+  }, [match, setBuffer]);
 
   const pushDigit = useCallback(
     (digit: string) => {
-      setNumberBuffer((buffer) => (buffer.length >= 2 ? digit : buffer + digit));
+      const previous = bufferRef.current;
+      setBuffer(previous.length >= 2 ? digit : previous + digit);
       if (bufferTimer.current !== null) clearTimeout(bufferTimer.current);
       bufferTimer.current = setTimeout(commitNumberBuffer, NUMBER_BUFFER_DELAY_MS);
     },
-    [commitNumberBuffer],
+    [commitNumberBuffer, setBuffer],
   );
 
   const recordRally = useMatchStore((state) => state.recordRally);
@@ -135,21 +157,25 @@ export function LiveScoutPage(): React.JSX.Element {
 
   const liveSet = snapshot?.currentSet ?? null;
   const isLive = liveSet !== null && liveSet.status === 'live';
+  // A closed set leaves the operator on this screen: offer the next step instead of a dead pad.
+  const setFinished = liveSet !== null && liveSet.status === 'finished';
+  const matchWon = snapshot?.matchWinner != null;
+  const showMatchEnd = setFinished && matchWon && !nextStepDismissed;
+  const showNextSetPrompt = setFinished && !matchWon && !nextStepDismissed;
 
   useLiveShortcuts({
-    enabled: settings.keyboardShortcutsEnabled && isLive && !endSetOpen && !endMatchOpen,
+    enabled: settings.keyboardShortcutsEnabled && isLive && !endSetOpen && !setFinished,
     hasNumberBuffer: numberBuffer.length > 0,
     trackSetSkill: match?.settings.trackSetSkill ?? false,
     onDigit: pushDigit,
     onCommitNumber: commitNumberBuffer,
     onBackspace: () => {
-      setNumberBuffer((buffer) => {
-        if (buffer.length === 0) {
-          setSelectedPlayerId(null);
-          return buffer;
-        }
-        return buffer.slice(0, -1);
-      });
+      const buffer = bufferRef.current;
+      if (buffer.length === 0) {
+        setSelectedPlayerId(null);
+        return;
+      }
+      setBuffer(buffer.slice(0, -1));
     },
     onCourtPosition: (positionIndex) => {
       const position = COURT_POSITIONS[positionIndex];
@@ -157,7 +183,7 @@ export function LiveScoutPage(): React.JSX.Element {
       if (spot !== undefined) setSelectedPlayerId(spot.playerId);
     },
     onSkill: (skill) => {
-      if (selectedPlayerId !== null) setSelectedSkill(skill);
+      setSelectedSkill(skill);
     },
     onOutcome: selectOutcome,
     onOurPoint: expressOurPoint,
@@ -348,15 +374,27 @@ export function LiveScoutPage(): React.JSX.Element {
         <Button size="live" onClick={expressOurError}>
           ✖ {LIVE.expressOurError}
         </Button>
-        <Button
-          size="live"
-          variant="secondary"
-          onClick={() => {
-            setEndSetRequested(true);
-          }}
-        >
-          {LIVE.endSet}
-        </Button>
+        {setFinished ? (
+          <Button
+            size="live"
+            variant="primary"
+            onClick={() => {
+              void navigate(matchWon ? ROUTES.summary : ROUTES.lineup);
+            }}
+          >
+            {matchWon ? DIALOGS.matchEnd.goToSummary : DIALOGS.setEnd.startNextSet(liveSet.index + 2)}
+          </Button>
+        ) : (
+          <Button
+            size="live"
+            variant="secondary"
+            onClick={() => {
+              setEndSetRequested(true);
+            }}
+          >
+            {LIVE.endSet}
+          </Button>
+        )}
       </div>
 
       <p aria-live="polite" className="sr-only">
@@ -422,12 +460,12 @@ export function LiveScoutPage(): React.JSX.Element {
           endCurrentSet();
           setEndSetRequested(false);
           setEndSetDismissedAt(null);
-          setEndMatchOpen(true);
+          setNextStepDismissed(false);
         }}
       />
 
       <Dialog
-        open={endMatchOpen && snapshot.matchWinner !== null}
+        open={showMatchEnd}
         title={DIALOGS.matchEnd.title}
         description={DIALOGS.matchEnd.body(
           match.info.ourTeam.name,
@@ -438,11 +476,31 @@ export function LiveScoutPage(): React.JSX.Element {
         confirmLabel={DIALOGS.matchEnd.goToSummary}
         cancelLabel={DIALOGS.matchEnd.stayHere}
         onCancel={() => {
-          setEndMatchOpen(false);
+          setNextStepDismissed(true);
         }}
         onConfirm={() => {
-          setEndMatchOpen(false);
           void navigate(ROUTES.summary);
+        }}
+      />
+
+      <Dialog
+        open={showNextSetPrompt}
+        title={DIALOGS.setEnd.title(liveSet.index + 1)}
+        description={DIALOGS.setEnd.body(
+          match.info.ourTeam.name,
+          liveSet.ourPoints,
+          liveSet.theirPoints,
+          match.info.opponentTeam.name,
+          snapshot.setsWon.us,
+          snapshot.setsWon.them,
+        )}
+        confirmLabel={DIALOGS.setEnd.startNextSet(liveSet.index + 2)}
+        cancelLabel={DIALOGS.matchEnd.stayHere}
+        onCancel={() => {
+          setNextStepDismissed(true);
+        }}
+        onConfirm={() => {
+          void navigate(ROUTES.lineup);
         }}
       />
 

@@ -14,7 +14,7 @@ import { SetScoreTable } from '@presentation/components/report/SetScoreTable';
 import { SetTrend } from '@presentation/components/report/SetTrend';
 import { TeamStatsPanel } from '@presentation/components/report/TeamStatsPanel';
 import { ROUTES } from '@presentation/routes';
-import { COMMON_BUTTONS, LIVE, NEW_MATCH, STATS, SUMMARY, TOASTS } from '@shared/copy';
+import { COMMON_BUTTONS, DIALOGS, LIVE, NEW_MATCH, STATS, SUMMARY, TOASTS } from '@shared/copy';
 import { formatDateIt } from '@shared/format/number';
 
 const EXPORT_BUTTONS: readonly { readonly format: ExportFormat; readonly label: string }[] = [
@@ -32,6 +32,7 @@ export function SummaryPage(): React.JSX.Element {
 
   const [runningFormat, setRunningFormat] = useState<ExportFormat | null>(null);
   const [failedFormat, setFailedFormat] = useState<ExportFormat | null>(null);
+  const [finishPromptOpen, setFinishPromptOpen] = useState(false);
 
   const stats = useMemo(() => (match === null ? null : computeMatchStatistics(match)), [match]);
 
@@ -119,7 +120,7 @@ export function SummaryPage(): React.JSX.Element {
               <Button
                 variant="primary"
                 onClick={() => {
-                  finishMatch();
+                  setFinishPromptOpen(true);
                 }}
               >
                 {LIVE.endMatch}
@@ -161,6 +162,28 @@ export function SummaryPage(): React.JSX.Element {
       <p className="text-[var(--fs-small)] text-[var(--text-muted)]">
         Generato il {formatDateIt(new Date().toISOString().slice(0, 10))}
       </p>
+
+      {/* Closing the match stops any further recording, so it is always confirmed. */}
+      <Dialog
+        open={finishPromptOpen}
+        title={DIALOGS.confirmEndMatch.title}
+        description={DIALOGS.confirmEndMatch.body(
+          match.info.ourTeam.name,
+          setsWon.us,
+          setsWon.them,
+          match.info.opponentTeam.name,
+        )}
+        confirmLabel={DIALOGS.confirmEndMatch.confirm}
+        cancelLabel={DIALOGS.confirmEndMatch.cancel}
+        onCancel={() => {
+          setFinishPromptOpen(false);
+        }}
+        onConfirm={() => {
+          finishMatch();
+          setFinishPromptOpen(false);
+          showToast(TOASTS.matchSaved, 'success');
+        }}
+      />
 
       <Dialog
         open={failedFormat !== null}

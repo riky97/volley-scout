@@ -1,5 +1,5 @@
 import { beforeEach, describe, expect, it } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { fireEvent, render, screen, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import type { Lineup, Match, Player } from '@domain/index';
@@ -98,5 +98,29 @@ describe('LiveScoutPage', () => {
     await user.click(screen.getByRole('button', { name: /Punto nostro/u }));
 
     expect(screen.getByLabelText('Noi: 1')).toBeInTheDocument();
+  });
+  it('records an action from the keyboard: shirt number, skill, outcome', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(document.body);
+
+    // The shirt number is committed by the next key, so the skill must still register.
+    fireEvent.keyDown(document, { key: '4' });
+    fireEvent.keyDown(document, { key: 'a' });
+    fireEvent.keyDown(document, { key: 'p' });
+
+    expect(screen.getByLabelText('Noi: 1')).toBeInTheDocument();
+  });
+
+  it('gives us a point with the space bar and takes it back with Ctrl+Z', async () => {
+    const user = userEvent.setup();
+    renderPage();
+    await user.click(document.body);
+
+    fireEvent.keyDown(document, { key: ' ' });
+    expect(screen.getByLabelText('Noi: 1')).toBeInTheDocument();
+
+    fireEvent.keyDown(document, { key: 'z', ctrlKey: true });
+    expect(screen.getByLabelText('Noi: 0')).toBeInTheDocument();
   });
 });

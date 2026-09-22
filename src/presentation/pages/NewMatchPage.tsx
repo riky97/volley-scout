@@ -3,7 +3,7 @@ import { useNavigate } from 'react-router-dom';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
-import type { MatchSettings } from '@domain/index';
+import type { BestOf, MatchSettings } from '@domain/index';
 import { createMatch } from '@domain/index';
 import { useMatchStore } from '@application/stores/matchStore';
 import { useSettingsStore } from '@application/stores/settingsStore';
@@ -17,6 +17,11 @@ import { COMMON_BUTTONS, DIALOGS, NEW_MATCH, SETTINGS, STEPS, VALIDATION } from 
 
 const OUR_SIDE_VALUES = ['home', 'away'] as const;
 
+/** Radio inputs compare by string, so the match format travels through the form as one. */
+function bestOfToField(bestOf: BestOf): '3' | '5' {
+  return bestOf === 3 ? '3' : '5';
+}
+
 const formSchema = z
   .object({
     homeTeamName: z.string().trim().min(1, VALIDATION.teamNameRequired),
@@ -26,7 +31,7 @@ const formSchema = z
     venue: z.string(),
     competition: z.string(),
     notes: z.string(),
-    bestOf: z.union([z.literal(3), z.literal(5)]),
+    bestOf: z.enum(['3', '5']),
     pointsToWinSet: z.number().int().min(15, VALIDATION.pointsRange).max(30, VALIDATION.pointsRange),
     pointsToWinTieBreak: z
       .number()
@@ -65,7 +70,7 @@ export function NewMatchPage(): React.JSX.Element {
     venue: '',
     competition: '',
     notes: '',
-    bestOf: settings.defaultMatchSettings.bestOf,
+    bestOf: bestOfToField(settings.defaultMatchSettings.bestOf),
     pointsToWinSet: settings.defaultMatchSettings.pointsToWinSet,
     pointsToWinTieBreak: settings.defaultMatchSettings.pointsToWinTieBreak,
     startingServer: settings.defaultMatchSettings.startingServer,
@@ -95,7 +100,7 @@ export function NewMatchPage(): React.JSX.Element {
         venue: '',
         competition: '',
         notes: '',
-        bestOf: settings.defaultMatchSettings.bestOf,
+        bestOf: bestOfToField(settings.defaultMatchSettings.bestOf),
         pointsToWinSet: settings.defaultMatchSettings.pointsToWinSet,
         pointsToWinTieBreak: settings.defaultMatchSettings.pointsToWinTieBreak,
         startingServer: settings.defaultMatchSettings.startingServer,
@@ -113,7 +118,7 @@ export function NewMatchPage(): React.JSX.Element {
     const opponentTeamName = values.ourSide === 'home' ? values.awayTeamName : values.homeTeamName;
     const matchSettings: MatchSettings = {
       ...settings.defaultMatchSettings,
-      bestOf: values.bestOf,
+      bestOf: values.bestOf === '3' ? 3 : 5,
       pointsToWinSet: values.pointsToWinSet,
       pointsToWinTieBreak: values.pointsToWinTieBreak,
       startingServer: values.startingServer,
@@ -239,11 +244,11 @@ export function NewMatchPage(): React.JSX.Element {
             <legend className="sr-only">{NEW_MATCH.format}</legend>
             <div className="flex gap-[var(--sp-5)]">
               <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value={5} {...register('bestOf', { valueAsNumber: true })} />
+                <input type="radio" value="5" {...register('bestOf')} />
                 {NEW_MATCH.bestOf5}
               </label>
               <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value={3} {...register('bestOf', { valueAsNumber: true })} />
+                <input type="radio" value="3" {...register('bestOf')} />
                 {NEW_MATCH.bestOf3}
               </label>
             </div>

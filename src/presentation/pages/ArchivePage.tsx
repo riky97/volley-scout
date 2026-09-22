@@ -194,7 +194,8 @@ export function ArchivePage(): React.JSX.Element {
                     )}
                   </td>
                   <td className="p-[var(--sp-3)] tabular-nums">
-                    {entry.status === 'finished'
+                    {/* An unfinished match still has a partial result worth showing. */}
+                    {entry.setsWon.us + entry.setsWon.them > 0
                       ? `${String(entry.setsWon.us)} – ${String(entry.setsWon.them)}`
                       : '–'}
                   </td>
