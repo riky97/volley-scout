@@ -47,7 +47,7 @@ Legend: `[ ]` todo · `[~]` in progress · `[x]` done · `[!]` blocked
 
 ## Phase 7 — Quality & build
 - [x] P7.1 Unit/integration test suite (domain + components)
-- [~] P7.2 Accessibility pass (WCAG 2.2 AA where reasonable)
+- [x] P7.2 Accessibility pass (WCAG 2.2 AA where reasonable)
 - [x] P7.3 Error handling, empty/loading states
 - [x] P7.4 Crash recovery & close interception
 - [x] P7.5 Italian user guide + README
