@@ -385,6 +385,8 @@ export const DIALOGS = {
     body: 'La partita in corso resta salvata e potrai riprenderla alla prossima apertura.',
     bodyUnsaved:
       'Ci sono modifiche non ancora salvate: verranno salvate prima della chiusura.',
+    bodyFailed:
+      'Chiusura non riuscita. Chiudi la finestra dal Task Manager oppure riprova; la partita resta salvata.',
     cancel: 'Annulla',
     confirm: 'Sì, chiudi',
   },

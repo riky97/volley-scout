@@ -54,6 +54,7 @@ export function App(): React.JSX.Element {
         <CloseConfirmationDialog
           open={closeGuard.isConfirming}
           hasUnsavedChanges={closeGuard.hasUnsavedChanges}
+          closeFailed={closeGuard.closeFailed}
           onConfirm={closeGuard.confirmClose}
           onCancel={closeGuard.cancelClose}
         />

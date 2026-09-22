@@ -63,7 +63,7 @@ Import aliases: `@domain/*`, `@application/*`, `@infrastructure/*`, `@presentati
 ## Safety rails
 
 - No runtime network access, no CDN fonts, no analytics.
-- Tauri capabilities stay minimal: `core:default`, `dialog:allow-save`, `dialog:allow-open`.
+- Tauri capabilities stay minimal: `core:default`, `core:window:allow-destroy`, `dialog:allow-save`, `dialog:allow-open`.
   File IO goes through the Rust commands in `src-tauri/src/storage.rs`, which validate every path.
 - Never write secrets or personal data beyond player names to disk.
 

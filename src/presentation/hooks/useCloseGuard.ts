@@ -8,6 +8,8 @@ export interface CloseGuard {
   readonly isConfirming: boolean;
   /** True when a save is still in flight, so the dialog can say so. */
   readonly hasUnsavedChanges: boolean;
+  /** True when the window refused to close, so the failure is visible rather than silent. */
+  readonly closeFailed: boolean;
   readonly confirmClose: () => void;
   readonly cancelClose: () => void;
 }
@@ -20,6 +22,7 @@ export interface CloseGuard {
 export function useCloseGuard(): CloseGuard {
   const [isConfirming, setIsConfirming] = useState(false);
   const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+  const [closeFailed, setCloseFailed] = useState(false);
 
   useEffect(() => {
     if (!isTauri()) {
@@ -41,6 +44,7 @@ export function useCloseGuard(): CloseGuard {
       .onCloseRequested((event) => {
         event.preventDefault();
         setHasUnsavedChanges(useMatchStore.getState().hasUnsavedChanges());
+        setCloseFailed(false);
         setIsConfirming(true);
       })
       .then((stop) => {
@@ -55,11 +59,23 @@ export function useCloseGuard(): CloseGuard {
   }, []);
 
   const confirmClose = useCallback(() => {
-    setIsConfirming(false);
+    // The dialog stays up until the window is actually gone, so a refusal has somewhere to show.
     void (async () => {
-      // Never close on top of a write still on its way to disk.
-      await useMatchStore.getState().flushPendingSave();
-      await getCurrentWindow().destroy();
+      try {
+        // Never close on top of a write still on its way to disk.
+        await useMatchStore.getState().flushPendingSave();
+      } catch (error) {
+        // A failed save must not trap the operator in a window that refuses to close.
+        console.error('Flush before close failed', error);
+      }
+      try {
+        await getCurrentWindow().destroy();
+      } catch (error) {
+        // Closing is denied only if the window capability is missing: say so instead of
+        // leaving the operator clicking a button that appears to do nothing.
+        console.error('Window close failed', error);
+        setCloseFailed(true);
+      }
     })();
   }, []);
 
@@ -67,5 +83,5 @@ export function useCloseGuard(): CloseGuard {
     setIsConfirming(false);
   }, []);
 
-  return { isConfirming, hasUnsavedChanges, confirmClose, cancelClose };
+  return { isConfirming, hasUnsavedChanges, closeFailed, confirmClose, cancelClose };
 }

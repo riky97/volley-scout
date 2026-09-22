@@ -1,7 +1,7 @@
 {
   "name": "volley-scout",
   "private": true,
-  "version": "0.1.1",
+  "version": "0.1.2",
   "type": "module",
   "description": "Offline-first desktop app to scout volleyball matches (internal team use).",
   "scripts": {

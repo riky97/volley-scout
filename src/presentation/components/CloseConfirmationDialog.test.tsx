@@ -9,6 +9,7 @@ describe('CloseConfirmationDialog', () => {
       <CloseConfirmationDialog
         open={false}
         hasUnsavedChanges={false}
+        closeFailed={false}
         onConfirm={vi.fn()}
         onCancel={vi.fn()}
       />,
@@ -26,6 +27,7 @@ describe('CloseConfirmationDialog', () => {
       <CloseConfirmationDialog
         open
         hasUnsavedChanges={false}
+        closeFailed={false}
         onConfirm={onConfirm}
         onCancel={onCancel}
       />,
@@ -48,6 +50,7 @@ describe('CloseConfirmationDialog', () => {
       <CloseConfirmationDialog
         open
         hasUnsavedChanges={false}
+        closeFailed={false}
         onConfirm={onConfirm}
         onCancel={onCancel}
       />,
@@ -61,9 +64,29 @@ describe('CloseConfirmationDialog', () => {
 
   it('warns when a save is still in flight', () => {
     render(
-      <CloseConfirmationDialog open hasUnsavedChanges onConfirm={vi.fn()} onCancel={vi.fn()} />,
+      <CloseConfirmationDialog
+        open
+        hasUnsavedChanges
+        closeFailed={false}
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />,
     );
 
     expect(screen.getByText(/modifiche non ancora salvate/u)).toBeInTheDocument();
+  });
+
+  it('says so when the window refused to close', () => {
+    render(
+      <CloseConfirmationDialog
+        open
+        hasUnsavedChanges={false}
+        closeFailed
+        onConfirm={vi.fn()}
+        onCancel={vi.fn()}
+      />,
+    );
+
+    expect(screen.getByText(/Chiusura non riuscita/u)).toBeInTheDocument();
   });
 });

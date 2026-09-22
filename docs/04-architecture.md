@@ -76,7 +76,9 @@ commands in `src-tauri/src/storage.rs`, which validate paths and write atomicall
 3. **Rotation is an offset, not a shuffled array.** The lineup array keeps the initial P1..P6 order
    forever; substitutions overwrite one slot in place, so the offset stays valid.
 4. **Terminality is outcome-driven**, identical for every skill: `point` to us, `error` to them.
-5. **Tauri capabilities stay minimal** — `core:default`, `dialog:allow-save`, `dialog:allow-open`.
+5. **Tauri capabilities stay minimal** — `core:default`, `core:window:allow-destroy`,
+   `dialog:allow-save`, `dialog:allow-open`. `core:default` grants only read-only window
+   queries, so closing the window from the quit confirmation needs `allow-destroy` explicitly.
    No `fs` plugin: custom commands keep the reachable surface to the app-data folder plus the one
    path the user picked in a dialog.
 6. **Hash routing** because the desktop build serves static files with no history fallback.

@@ -1,10 +1,11 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "default",
-  "description": "Minimal permissions: core window handling plus the native save/open dialogs used for export and import.",
+  "description": "Minimal permissions: core window handling, the programmatic close used by the quit confirmation, and the native save/open dialogs used for export and import.",
   "windows": ["main"],
   "permissions": [
     "core:default",
+    "core:window:allow-destroy",
     "dialog:allow-save",
     "dialog:allow-open"
   ]
