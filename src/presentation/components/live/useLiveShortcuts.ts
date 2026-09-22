@@ -56,7 +56,11 @@ function isTypingTarget(target: EventTarget | null): boolean {
  */
 export function useLiveShortcuts(handlers: LiveShortcutHandlers): void {
   const ref = useRef(handlers);
-  ref.current = handlers;
+
+  // Keep the handler snapshot fresh without re-binding the document listener on every render.
+  useEffect(() => {
+    ref.current = handlers;
+  });
 
   useEffect(() => {
     const onKeyDown = (event: KeyboardEvent): void => {

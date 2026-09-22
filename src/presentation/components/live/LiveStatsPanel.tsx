@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react';
 import type { Match, PlayerStatistics, TeamStatistics } from '@domain/index';
 import { computeMatchStatistics } from '@domain/index';
-import { NOT_AVAILABLE, STATS } from '@shared/copy';
+import { NOT_AVAILABLE, STATS, UNKNOWN_PLAYER } from '@shared/copy';
 import { formatPercent1 } from '@shared/format/number';
 import styles from './LiveStatsPanel.module.scss';
 
@@ -18,7 +18,7 @@ function shirtOf(match: Match, playerId: string): string {
 
 function nameOf(match: Match, playerId: string): string {
   const player = match.roster.find((candidate) => candidate.id === playerId);
-  if (player === undefined) return 'Giocatore sconosciuto';
+  if (player === undefined) return UNKNOWN_PLAYER;
   return player.isLibero ? `${player.shortName} (L)` : player.shortName;
 }
 

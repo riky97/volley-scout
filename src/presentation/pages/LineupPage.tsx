@@ -1,7 +1,7 @@
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { CourtPosition, DomainErrorCode, Id, Lineup, Player, TeamSide } from '@domain/index';
-import { COURT_POSITIONS, DEFAULT_MATCH_SETTINGS, firstServerOfSet } from '@domain/index';
+import { DEFAULT_MATCH_SETTINGS, firstServerOfSet } from '@domain/index';
 import { useMatchStore } from '@application/stores/matchStore';
 import {
   COMMON_BUTTONS,
@@ -31,10 +31,18 @@ function slotsFromPreviousLineup(lineup: Lineup | null, roster: readonly Player[
   const slots = emptySlots();
   if (lineup === null) return slots;
   const availableIds = new Set(roster.filter((player) => player.isAvailable).map((p) => p.id));
-  COURT_POSITIONS.forEach((position, index) => {
-    const playerId = lineup[index];
+  const [p1, p2, p3, p4, p5, p6] = lineup;
+  const ordered: ReadonlyArray<readonly [CourtPosition, Id]> = [
+    ['P1', p1],
+    ['P2', p2],
+    ['P3', p3],
+    ['P4', p4],
+    ['P5', p5],
+    ['P6', p6],
+  ];
+  for (const [position, playerId] of ordered) {
     if (availableIds.has(playerId)) slots[position] = playerId;
-  });
+  }
   return slots;
 }
 
@@ -87,7 +95,7 @@ export function LineupPage(): React.JSX.Element {
             <Button
               variant="primary"
               onClick={() => {
-                navigate(ROUTES.newMatch);
+                void navigate(ROUTES.newMatch);
               }}
             >
               {HOME.emptyState.button}
@@ -133,7 +141,7 @@ export function LineupPage(): React.JSX.Element {
       showToast(messageForErrorCode(code), 'error');
       return;
     }
-    navigate(ROUTES.live);
+    void navigate(ROUTES.live);
   }
 
   const confirmLabel = setIndex === 0 ? LINEUP.startMatch : LINEUP.startSet(setNumber);
@@ -224,7 +232,7 @@ export function LineupPage(): React.JSX.Element {
         <Button
           variant="secondary"
           onClick={() => {
-            navigate(ROUTES.roster);
+            void navigate(ROUTES.roster);
           }}
         >
           {COMMON_BUTTONS.back}

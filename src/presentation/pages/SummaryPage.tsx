@@ -48,7 +48,7 @@ export function SummaryPage(): React.JSX.Element {
             <Button
               variant="secondary"
               onClick={() => {
-                navigate(ROUTES.archive);
+                void navigate(ROUTES.archive);
               }}
             >
               {SUMMARY.error.backToArchive}
@@ -56,7 +56,7 @@ export function SummaryPage(): React.JSX.Element {
             <Button
               variant="primary"
               onClick={() => {
-                navigate(ROUTES.home);
+                void navigate(ROUTES.home);
               }}
             >
               {COMMON_BUTTONS.backToHome}

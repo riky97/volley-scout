@@ -33,3 +33,14 @@ export const COMMON_STATES = {
   unexpectedErrorBody:
     "L'applicazione può continuare. Se il problema si ripete, riavvia il programma.",
 } as const;
+
+/** Save indicator in the app header. */
+export const SAVE_STATE_LABELS = {
+  idle: 'Salvato',
+  pending: 'Salvataggio…',
+  saving: 'Salvataggio…',
+  error: 'Salvataggio non riuscito',
+} as const;
+
+/** Shown when an event refers to a player who is no longer in the roster. */
+export const UNKNOWN_PLAYER = 'Giocatore sconosciuto';

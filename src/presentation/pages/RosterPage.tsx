@@ -48,7 +48,7 @@ export function RosterPage(): React.JSX.Element {
     void refreshArchive();
   }, [refreshArchive]);
 
-  const roster = match?.roster ?? [];
+  const roster = useMemo(() => match?.roster ?? [], [match]);
 
   const duplicateNumbers = useMemo(() => new Set(duplicateShirtNumbers(roster)), [roster]);
   const hasDuplicates = useMemo(() => hasDuplicateShirtNumbers(roster), [roster]);
@@ -74,7 +74,7 @@ export function RosterPage(): React.JSX.Element {
             <Button
               variant="primary"
               onClick={() => {
-                navigate(ROUTES.newMatch);
+                void navigate(ROUTES.newMatch);
               }}
             >
               {HOME.emptyState.button}
@@ -88,6 +88,8 @@ export function RosterPage(): React.JSX.Element {
   function persistRoster(next: readonly Player[]): void {
     updateRoster(next);
   }
+
+  const ourTeamName = match.info.ourTeam.name;
 
   function handleSavePlayer(values: PlayerFormValues): void {
     const player = createPlayer({
@@ -147,7 +149,7 @@ export function RosterPage(): React.JSX.Element {
       (template) => template.name.toLowerCase() === trimmed.toLowerCase(),
     );
     if (isDuplicate) return VALIDATION.templateNameDuplicate;
-    void saveTemplate(trimmed, match.info.ourTeam.name, roster)
+    void saveTemplate(trimmed, ourTeamName, roster)
       .then(() => {
         showToast(TOASTS.templateSaved, 'success');
       })
@@ -214,24 +216,20 @@ export function RosterPage(): React.JSX.Element {
 
       <PlayerFormRow
         key={editingId ?? 'new'}
-        initialValues={
-          editingPlayer === null
-            ? undefined
-            : {
+        {...(editingPlayer === null
+          ? { onSave: handleSavePlayer }
+          : {
+              initialValues: {
                 shirtNumber: editingPlayer.shirtNumber,
                 name: editingPlayer.name,
                 role: editingPlayer.role,
                 isLibero: editingPlayer.isLibero,
-              }
-        }
-        onSave={handleSavePlayer}
-        onCancel={
-          editingId === null
-            ? undefined
-            : () => {
+              },
+              onSave: handleSavePlayer,
+              onCancel: () => {
                 setEditingId(null);
-              }
-        }
+              },
+            })}
       />
 
       <footer className="flex flex-col gap-[var(--sp-2)] border-t border-[var(--border)] pt-[var(--sp-4)]">
@@ -246,7 +244,7 @@ export function RosterPage(): React.JSX.Element {
           <Button
             variant="secondary"
             onClick={() => {
-              navigate(ROUTES.newMatch);
+              void navigate(ROUTES.newMatch);
             }}
           >
             {COMMON_BUTTONS.back}
@@ -256,7 +254,7 @@ export function RosterPage(): React.JSX.Element {
             disabled={!canProceed}
             aria-describedby={blockingReasons.length > 0 ? 'roster-next-reason' : undefined}
             onClick={() => {
-              navigate(ROUTES.lineup);
+              void navigate(ROUTES.lineup);
             }}
           >
             {COMMON_BUTTONS.next}

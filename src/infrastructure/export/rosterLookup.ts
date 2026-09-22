@@ -1,10 +1,11 @@
 import type { Id, Match, ScoutEvent } from '@domain/index';
-import { OPPONENT_POINT_LABEL, PLAYER_ROLE_LABELS } from '@shared/copy';
+import { LIVE, OPPONENT_POINT_LABEL, PLAYER_ROLE_LABELS } from '@shared/copy';
 import { formatScoreLine } from '@shared/format/number';
 
 /** Local, one-off Italian labels for event types: no shared copy entry covers the raw log. */
 export const EVENT_TYPE_LABELS: Record<ScoutEvent['type'], string> = {
   rally: 'Azione',
+  our_point: LIVE.expressOurPoint,
   opponent_point: OPPONENT_POINT_LABEL,
   timeout: 'Time-out',
   substitution: 'Cambio',
@@ -40,7 +41,7 @@ export function setsWonCount(match: Match): { readonly us: number; readonly them
 }
 
 export function eventScoreLabel(event: ScoutEvent): string {
-  if (event.type === 'rally' || event.type === 'opponent_point') {
+  if (event.type === 'rally' || event.type === 'our_point' || event.type === 'opponent_point') {
     return formatScoreLine(event.scoreAfter.us, event.scoreAfter.them);
   }
   if (event.type === 'timeout' || event.type === 'substitution' || event.type === 'note') {

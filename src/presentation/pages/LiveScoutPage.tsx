@@ -26,8 +26,6 @@ export function LiveScoutPage(): React.JSX.Element {
   const navigate = useNavigate();
   const match = useMatchStore((state) => state.match);
   const snapshot = useMatchStore((state) => state.snapshot);
-  const lastErrorCode = useMatchStore((state) => state.lastErrorCode);
-  const clearError = useMatchStore((state) => state.clearError);
   const settings = useSettingsStore((state) => state.settings);
 
   const [selectedPlayerId, setSelectedPlayerId] = useState<Id | null>(null);
@@ -36,10 +34,11 @@ export function LiveScoutPage(): React.JSX.Element {
   const [statsOpen, setStatsOpen] = useState(false);
   const [substitutionOpen, setSubstitutionOpen] = useState(false);
   const [timeoutOpen, setTimeoutOpen] = useState(false);
-  const [endSetOpen, setEndSetOpen] = useState(false);
+  const [endSetRequested, setEndSetRequested] = useState(false);
+  /** Score at which the operator dismissed the automatic set-end dialog. */
+  const [endSetDismissedAt, setEndSetDismissedAt] = useState<string | null>(null);
   const [endMatchOpen, setEndMatchOpen] = useState(false);
   const [shortcutsOpen, setShortcutsOpen] = useState(false);
-  const [announcement, setAnnouncement] = useState('');
 
   const bufferTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
@@ -49,21 +48,28 @@ export function LiveScoutPage(): React.JSX.Element {
     setNumberBuffer('');
   }, []);
 
+  const scoreKey =
+    snapshot === null ? '' : `${String(snapshot.score.us)}-${String(snapshot.score.them)}`;
+
   // The set-end dialog opens by itself, but the set only closes when the operator confirms.
-  useEffect(() => {
-    if (snapshot?.pendingSetWinner != null) setEndSetOpen(true);
-  }, [snapshot?.pendingSetWinner]);
+  // Dismissing it is remembered for that exact score, so it reappears on the next rally.
+  const endSetOpen =
+    endSetRequested ||
+    (snapshot?.pendingSetWinner != null && endSetDismissedAt !== scoreKey);
 
-  useEffect(() => {
-    if (lastErrorCode === null) return;
-    showToast(messageForError(lastErrorCode), 'error');
-    clearError();
-  }, [lastErrorCode, clearError]);
+  const announcement = snapshot === null ? '' : `${String(snapshot.score.us)} a ${String(snapshot.score.them)}`;
 
-  useEffect(() => {
-    if (snapshot === null) return;
-    setAnnouncement(`${String(snapshot.score.us)} a ${String(snapshot.score.them)}`);
-  }, [snapshot?.score.us, snapshot?.score.them, snapshot]);
+  // Subscribing keeps the toast out of the render path: a rejected action is an external event.
+  useEffect(
+    () =>
+      useMatchStore.subscribe((state, previous) => {
+        if (state.lastErrorCode !== null && state.lastErrorCode !== previous.lastErrorCode) {
+          showToast(messageForError(state.lastErrorCode), 'error');
+          state.clearError();
+        }
+      }),
+    [],
+  );
 
   const commitNumberBuffer = useCallback(() => {
     if (bufferTimer.current !== null) {
@@ -172,7 +178,7 @@ export function LiveScoutPage(): React.JSX.Element {
       setStatsOpen((open) => !open);
     },
     onEndSet: () => {
-      setEndSetOpen(true);
+      setEndSetRequested(true);
     },
     onEscape: () => {
       if (selectedSkill !== null) setSelectedSkill(null);
@@ -346,7 +352,7 @@ export function LiveScoutPage(): React.JSX.Element {
           size="live"
           variant="secondary"
           onClick={() => {
-            setEndSetOpen(true);
+            setEndSetRequested(true);
           }}
         >
           {LIVE.endSet}
@@ -409,11 +415,13 @@ export function LiveScoutPage(): React.JSX.Element {
         confirmLabel={LIVE.endSet}
         cancelLabel={COMMON_BUTTONS.cancel}
         onCancel={() => {
-          setEndSetOpen(false);
+          setEndSetRequested(false);
+          setEndSetDismissedAt(scoreKey);
         }}
         onConfirm={() => {
           endCurrentSet();
-          setEndSetOpen(false);
+          setEndSetRequested(false);
+          setEndSetDismissedAt(null);
           setEndMatchOpen(true);
         }}
       />

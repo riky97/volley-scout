@@ -13,7 +13,7 @@ import { Card } from '@presentation/components/ui/Card';
 import { Dialog } from '@presentation/components/ui/Dialog';
 import { describedBy, FormField, TEXT_INPUT_CLASSES } from '@presentation/components/setup/FormField';
 import { ROUTES } from '@presentation/routes';
-import { COMMON_BUTTONS, DIALOGS, NEW_MATCH, STEPS, VALIDATION } from '@shared/copy';
+import { COMMON_BUTTONS, DIALOGS, NEW_MATCH, SETTINGS, STEPS, VALIDATION } from '@shared/copy';
 
 const OUR_SIDE_VALUES = ['home', 'away'] as const;
 
@@ -35,6 +35,8 @@ const formSchema = z
       .max(30, VALIDATION.pointsRange),
     startingServer: z.enum(['us', 'them']),
     startingSide: z.enum(['left', 'right']),
+    winByTwo: z.boolean(),
+    trackSetSkill: z.boolean(),
   })
   .refine(
     (value) => value.homeTeamName.trim().toLowerCase() !== value.awayTeamName.trim().toLowerCase(),
@@ -68,6 +70,8 @@ export function NewMatchPage(): React.JSX.Element {
     pointsToWinTieBreak: settings.defaultMatchSettings.pointsToWinTieBreak,
     startingServer: settings.defaultMatchSettings.startingServer,
     startingSide: settings.defaultMatchSettings.startingSide,
+    winByTwo: settings.defaultMatchSettings.winByTwo,
+    trackSetSkill: settings.defaultMatchSettings.trackSetSkill,
   };
 
   const {
@@ -96,6 +100,8 @@ export function NewMatchPage(): React.JSX.Element {
         pointsToWinTieBreak: settings.defaultMatchSettings.pointsToWinTieBreak,
         startingServer: settings.defaultMatchSettings.startingServer,
         startingSide: settings.defaultMatchSettings.startingSide,
+        winByTwo: settings.defaultMatchSettings.winByTwo,
+        trackSetSkill: settings.defaultMatchSettings.trackSetSkill,
       });
     }
     // Only re-run when the loaded settings identity changes, not on every keystroke.
@@ -112,6 +118,8 @@ export function NewMatchPage(): React.JSX.Element {
       pointsToWinTieBreak: values.pointsToWinTieBreak,
       startingServer: values.startingServer,
       startingSide: values.startingSide,
+      winByTwo: values.winByTwo,
+      trackSetSkill: values.trackSetSkill,
     };
     const newMatch = createMatch({
       id: newId(),
@@ -279,6 +287,17 @@ export function NewMatchPage(): React.JSX.Element {
                 {...register('pointsToWinTieBreak', { valueAsNumber: true })}
               />
             </FormField>
+          </div>
+
+          <div className="mt-[var(--sp-4)] flex flex-col gap-[var(--sp-2)]">
+            <label className="flex items-center gap-[var(--sp-2)]">
+              <input type="checkbox" {...register('winByTwo')} />
+              {NEW_MATCH.winByTwo}
+            </label>
+            <label className="flex items-center gap-[var(--sp-2)]">
+              <input type="checkbox" {...register('trackSetSkill')} />
+              {SETTINGS.trackSets}
+            </label>
           </div>
         </Card>
 

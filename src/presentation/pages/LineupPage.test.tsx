@@ -61,7 +61,9 @@ describe('LineupPage', () => {
 
     const positions = ['P4', 'P3', 'P2', 'P5', 'P6', 'P1'];
     for (let index = 0; index < 6; index += 1) {
-      const chip = screen.getByRole('button', { name: new RegExp(`^${String(index + 1)}$`) });
+      const chip = screen.getByRole('button', {
+        name: new RegExp(`^${String(index + 1)}${SURNAMES[index] ?? ''}$`),
+      });
       await userEvent.click(chip);
       const position = positions[index] ?? 'P1';
       const slot = screen.getByRole('button', { name: new RegExp(`^${position} — Posizione libera$`) });
@@ -78,7 +80,9 @@ describe('LineupPage', () => {
 
     const positions = ['P4', 'P3', 'P2', 'P5', 'P6', 'P1'];
     for (let index = 0; index < 6; index += 1) {
-      const chip = screen.getByRole('button', { name: new RegExp(`^${String(index + 1)}$`) });
+      const chip = screen.getByRole('button', {
+        name: new RegExp(`^${String(index + 1)}${SURNAMES[index] ?? ''}$`),
+      });
       await userEvent.click(chip);
       const position = positions[index] ?? 'P1';
       const slot = screen.getByRole('button', { name: new RegExp(`^${position} — Posizione libera$`) });

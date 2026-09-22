@@ -11,7 +11,7 @@ interface PlayerColumn {
   readonly value: (row: PlayerStatistics) => string | number;
 }
 
-function playerColumns(match: Match, trackSetSkill: boolean): readonly PlayerColumn[] {
+function playerColumns(trackSetSkill: boolean): readonly PlayerColumn[] {
   const columns: PlayerColumn[] = [
     { header: STAT_LABELS.points.short, width: 8, value: (r) => formatCount(r.points) },
     { header: STAT_LABELS.errors.short, width: 8, value: (r) => formatCount(r.errors) },
@@ -52,7 +52,7 @@ function writePlayerStatsSheet(
   players: readonly PlayerStatistics[],
 ): void {
   const trackSetSkill = match.settings.trackSetSkill;
-  const extra = playerColumns(match, trackSetSkill);
+  const extra = playerColumns(trackSetSkill);
   const columns: Partial<Column>[] = [
     { header: 'N.', key: 'shirt', width: 6 },
     { header: 'Giocatore', key: 'name', width: 22 },
@@ -121,7 +121,9 @@ function eventOutcomeLabel(event: ScoutEvent): string {
 }
 
 function eventNoteLabel(event: ScoutEvent): string {
-  if (event.type === 'rally' || event.type === 'opponent_point') return event.comment;
+  if (event.type === 'rally' || event.type === 'our_point' || event.type === 'opponent_point') {
+    return event.comment;
+  }
   if (event.type === 'note') return event.text;
   return '';
 }

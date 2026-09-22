@@ -4,6 +4,7 @@ import type { Lineup, ScoutEvent } from '../entities/event';
 import { isRallyAffecting } from '../entities/event';
 import type { MatchSettings } from '../entities/settings';
 import type { SetState } from '../entities/set';
+import type { TerminalResult } from './scoring';
 import { applyPoint, isSetWon, isTerminalOutcome, isTieBreakSet, targetForSet } from './scoring';
 import { nextServingTeam } from './serving';
 import { nextRotationOffset } from './rotation';
@@ -139,13 +140,10 @@ export function foldEvents(
       const servingBefore = set.servingTeam;
       const rotationBefore = set.rotationOffset;
 
-      const terminal =
+      const terminal: TerminalResult =
         event.type === 'rally'
           ? isTerminalOutcome(event.skill, event.outcome)
-          : {
-              isTerminal: true,
-              pointTo: (event.type === 'our_point' ? 'us' : 'them') satisfies TeamSide as TeamSide,
-            };
+          : { isTerminal: true, pointTo: event.type === 'our_point' ? 'us' : 'them' };
 
       if (!terminal.isTerminal || terminal.pointTo === null) {
         // Non-terminal quality event: nothing about the set changes.

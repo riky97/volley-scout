@@ -97,7 +97,7 @@ const saveQueue = new SaveQueue<Match>(
     useMatchStore.setState({ saveState: state });
     if (state === 'error') {
       // Logged locally only; nothing leaves the machine.
-      console.error('Salvataggio non riuscito', error);
+      console.error('Match save failed', error);
     }
   },
 );

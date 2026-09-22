@@ -6,6 +6,7 @@ import {
   OUTCOME_LABELS,
   OUTCOME_SYMBOLS,
   SKILL_LABELS,
+  UNKNOWN_PLAYER,
 } from '@shared/copy';
 
 export interface EventDescription {
@@ -19,7 +20,7 @@ export interface EventDescription {
 
 function playerLabel(roster: readonly Player[], playerId: string): string {
   const player = roster.find((candidate) => candidate.id === playerId);
-  if (player === undefined) return 'Giocatore sconosciuto';
+  if (player === undefined) return UNKNOWN_PLAYER;
   return `${String(player.shirtNumber)} ${player.shortName}`;
 }
 

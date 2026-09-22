@@ -19,8 +19,8 @@ export function SubstitutionDialog({
   onCancel,
   onConfirm,
 }: SubstitutionDialogProps): React.JSX.Element {
-  const [outId, setOutId] = useState<Id | ''>('');
-  const [inId, setInId] = useState<Id | ''>('');
+  const [outId, setOutId] = useState('');
+  const [inId, setInId] = useState('');
 
   const onCourt = roster.filter((player) => set.lineup?.includes(player.id) === true);
   const bench = roster.filter(

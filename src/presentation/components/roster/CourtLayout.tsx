@@ -29,11 +29,10 @@ function Slot({
   readonly onSelectPosition: (position: CourtPosition) => void;
 }): React.JSX.Element {
   const player = playerId === null ? null : (playersById.get(playerId) ?? null);
-  const positionLabel = LINEUP.position(Number(position.slice(1)));
   const label =
     player === null
-      ? `${positionLabel} — ${LINEUP.emptySlot}`
-      : `${positionLabel} — ${String(player.shirtNumber)} ${player.name}${serving ? ` — ${LIVE.serving}` : ''}`;
+      ? `${position} — ${LINEUP.emptySlot}`
+      : `${position} — ${String(player.shirtNumber)} ${player.name}${serving ? ` — ${LIVE.serving}` : ''}`;
 
   return (
     <button

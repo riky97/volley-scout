@@ -1,7 +1,7 @@
 import type { ReactNode } from 'react';
 import { NavLink, useLocation } from 'react-router-dom';
 import clsx from 'clsx';
-import { APP_NAME, NAV } from '@shared/copy';
+import { APP_NAME, NAV, SAVE_STATE_LABELS } from '@shared/copy';
 import { ROUTES } from '../routes';
 import { useMatchStore } from '@application/stores/matchStore';
 import styles from './AppShell.module.scss';
@@ -11,13 +11,6 @@ const NAV_ITEMS = [
   { to: ROUTES.archive, label: NAV.archive },
   { to: ROUTES.settings, label: NAV.settings },
 ] as const;
-
-const SAVE_LABELS = {
-  idle: 'Salvato',
-  pending: 'Salvataggio…',
-  saving: 'Salvataggio…',
-  error: 'Salvataggio non riuscito',
-} as const;
 
 export function AppShell({ children }: { readonly children: ReactNode }): React.JSX.Element {
   const location = useLocation();
@@ -49,7 +42,7 @@ export function AppShell({ children }: { readonly children: ReactNode }): React.
             className={clsx(styles.saveState, saveState === 'error' && styles.saveStateError)}
             role="status"
           >
-            {SAVE_LABELS[saveState]}
+            {SAVE_STATE_LABELS[saveState]}
           </span>
         )}
       </header>

@@ -1,4 +1,4 @@
-import { describe, expect, it, vi } from 'vitest';
+import { beforeEach, describe, expect, it, vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { AppSettings } from '@domain/index';
@@ -6,7 +6,7 @@ import { DEFAULT_APP_SETTINGS } from '@domain/index';
 import { SettingsPage } from './SettingsPage';
 
 const settingsStoreState = vi.hoisted(() => ({
-  settings: DEFAULT_APP_SETTINGS as AppSettings,
+  settings: undefined as unknown as AppSettings,
   dataLocation: 'C:\\Users\\Test\\volley-scout',
   update: vi.fn().mockResolvedValue(undefined),
 }));
