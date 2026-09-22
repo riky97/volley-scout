@@ -1,0 +1,34 @@
+name: CI
+
+on:
+  push:
+    branches: [master]
+  pull_request:
+
+jobs:
+  frontend:
+    name: Typecheck, lint, test, build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-node@v7
+        with:
+          node-version: '24'
+          cache: npm
+      - run: npm ci
+      - run: npm run verify
+
+  rust:
+    name: Rust shell
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: dtolnay/rust-toolchain@stable
+      - uses: Swatinem/rust-cache@v2
+        with:
+          workspaces: './src-tauri -> target'
+      # The frontend bundle is not needed to type-check the Rust side.
+      - run: mkdir dist && echo "<!doctype html>" > dist/index.html
+        shell: bash
+      - run: cargo check --manifest-path src-tauri/Cargo.toml
+      - run: cargo test --manifest-path src-tauri/Cargo.toml
