@@ -259,10 +259,12 @@ export interface AppendNoteInput {
   readonly timestamp: IsoTimestamp;
 }
 
+/** Notes are allowed between sets too: they attach to the last started set. */
 export function appendNote(input: AppendNoteInput): Match {
   const { match, text, id, timestamp } = input;
   assertOpen(match);
-  const set = requireLiveSet(match);
+  const set = currentSetOf(match);
+  if (set === null) throw new DomainError('NO_LIVE_SET');
 
   const event: ScoutEvent = {
     type: 'note',

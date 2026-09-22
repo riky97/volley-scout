@@ -112,6 +112,22 @@ export function foldEvents(
       return;
     }
 
+    if (event.type === 'note') {
+      // A note may also be written between sets: it attaches to the last started set.
+      const lastSet = sets.at(-1);
+      if (lastSet === undefined) {
+        warnings.push({ code: 'ORPHAN_EVENT', setIndex: null, eventId: event.id });
+        return;
+      }
+      normalised.push({
+        ...event,
+        sequence,
+        setIndex: lastSet.index,
+        atScore: scoreOf(lastSet),
+      });
+      return;
+    }
+
     const set = liveSet();
     if (set === null) {
       warnings.push({ code: 'ORPHAN_EVENT', setIndex: null, eventId: event.id });
@@ -188,10 +204,6 @@ export function foldEvents(
           set.lineup = replaceInLineup(set.lineup, event.lineupSlot, event.playerInId);
         }
         set.substitutionsUsed += 1;
-        normalised.push({ ...event, sequence, setIndex: set.index, atScore: scoreOf(set) });
-        return;
-      }
-      case 'note': {
         normalised.push({ ...event, sequence, setIndex: set.index, atScore: scoreOf(set) });
         return;
       }
