@@ -82,3 +82,17 @@ commands in `src-tauri/src/storage.rs`, which validate paths and write atomicall
 6. **Hash routing** because the desktop build serves static files with no history fallback.
 7. **Tailwind is imported from a plain `.css` file**, not from SCSS: a Sass `@import` would inline
    the framework before the Tailwind plugin could process it.
+
+## Accepted trade-offs
+
+Findings from the final review that were considered and deliberately not changed:
+
+1. **Two court components.** `components/live/CourtGrid` and `components/roster/CourtLayout` both
+   draw a six-slot court, but they are different interactions: the live one selects a player who is
+   already on court, the lineup one assigns a player to an empty slot and must render an empty
+   state. Merging them would need slot-content render props and two accessibility modes behind one
+   API — more moving parts than the duplication costs. Revisit if a third court view appears.
+2. **The event log is folded twice per action** — once in `rebuildMatch`, once in `buildSnapshot`
+   (which needs the fold's warnings). The fold is pure and a full match is a few hundred events, so
+   the second pass is sub-millisecond. Threading the `FoldResult` through would couple the two
+   functions for no measurable gain.

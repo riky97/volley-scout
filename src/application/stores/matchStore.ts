@@ -22,6 +22,7 @@ import {
   appendSubstitution,
   appendTimeout,
   buildSnapshot,
+  canUndo,
   deleteEvent as deleteEventRule,
   editEvent as editEventRule,
   endMatch,
@@ -261,7 +262,9 @@ export const useMatchStore = create<MatchStoreState>((set, get) => ({
 
   undo: () => {
     const current = get().match;
-    if (current === null) return;
+    // Buffering the last event unconditionally would let redo re-append an event that undo
+    // refused to pop — a set_start, which would start a second live set.
+    if (current === null || !canUndo(current)) return;
     const last = current.events.at(-1) ?? null;
     mutate((match) => undoLastEvent(match, nowIso()));
     set({ redoBuffer: last });

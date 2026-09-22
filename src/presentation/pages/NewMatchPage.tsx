@@ -161,7 +161,7 @@ export function NewMatchPage(): React.JSX.Element {
         noValidate
         className="flex flex-col gap-[var(--sp-5)]"
       >
-        <Card title="Dati partita">
+        <Card title={NEW_MATCH.matchDataTitle}>
           <div className="grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-2">
             <FormField
               id="homeTeamName"
@@ -301,7 +301,7 @@ export function NewMatchPage(): React.JSX.Element {
           </div>
         </Card>
 
-        <Card title="Inizio">
+        <Card title={NEW_MATCH.startTitle}>
           <div className="grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-2">
             <fieldset className="flex flex-col gap-[var(--sp-2)]">
               <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">

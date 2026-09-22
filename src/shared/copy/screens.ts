@@ -63,6 +63,8 @@ export const HOME = {
 
 export const NEW_MATCH = {
   title: 'Nuova partita',
+  matchDataTitle: 'Dati partita',
+  startTitle: 'Inizio',
   homeTeam: 'Squadra di casa',
   awayTeam: 'Squadra ospite',
   date: 'Data',

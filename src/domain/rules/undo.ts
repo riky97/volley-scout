@@ -30,6 +30,8 @@ export function undoLastEvent(match: Match, timestamp: IsoTimestamp): Match {
 /** Re-appends an event that was just undone. The caller keeps the single-slot redo buffer. */
 export function redoEvent(match: Match, event: ScoutEvent, timestamp: IsoTimestamp): Match {
   if (isMatchClosed(match)) throw new DomainError('MATCH_CLOSED');
+  // Only events undo can pop may come back: re-appending a set_start would open a second set.
+  if (!isUndoable(event)) throw new DomainError('SET_ALREADY_LIVE');
   return rebuildMatch(
     { ...match, events: [...match.events, { ...event, sequence: match.events.length }] },
     timestamp,

@@ -187,6 +187,20 @@ export const appSettingsSchema = z.object({
   lastOpenedMatchId: idSchema.nullable(),
 });
 
+/**
+ * Compile-time guard against schema drift: if a domain type gains a required field that the
+ * schema does not parse, these assignments stop compiling instead of failing at runtime.
+ */
+const assertMatchShape: (value: z.infer<typeof matchSchema>) => Match = (value) => value;
+const assertTemplateShape: (value: z.infer<typeof rosterTemplateSchema>) => RosterTemplate = (
+  value,
+) => value;
+const assertSettingsShape: (value: z.infer<typeof appSettingsSchema>) => AppSettings = (value) =>
+  value;
+void assertMatchShape;
+void assertTemplateShape;
+void assertSettingsShape;
+
 export type ParseErrorCode = 'INVALID_JSON' | 'INVALID_DATA';
 
 export type ParseResult<T> =
