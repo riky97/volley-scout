@@ -12,6 +12,12 @@ Internal use by one team. No cloud, no accounts, no telemetry, no network calls 
 - Italian copy lives in `src/shared/labels/` — never hardcode Italian strings inside components
   unless they are one-off and clearly local to that component.
 
+## Branches
+
+`master` is production (Pages deploys from it, release tags are cut from it). `develop` is the
+integration branch: build features and fixes there, then merge `develop` into `master` to ship.
+Never commit directly to `master`.
+
 ## Commands
 
 ```bash

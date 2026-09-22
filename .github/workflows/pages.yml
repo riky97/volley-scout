@@ -2,6 +2,7 @@ name: Pages
 
 # The web build is the tablet fallback for when the laptop is not there.
 # The desktop installer stays the primary tool and is published by release.yml.
+# Only master deploys: master is production, develop is where the work happens.
 on:
   push:
     branches: [master]

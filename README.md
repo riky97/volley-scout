@@ -39,6 +39,16 @@ call. Export a JSON backup after a match scouted this way.
 npm run build:web    # vite build + scripts/buildServiceWorker.mjs
 ```
 
+## Branches
+
+- `master` is production: it is what the web fallback deploys from and what release tags are cut
+  from. Nothing is pushed straight to it.
+- `develop` is where features and fixes are built. Branch from it, merge back into it, and merge
+  `develop` into `master` when a version is ready to ship.
+
+CI runs on both branches and on every pull request. Pages deploys only from `master`, and the
+installers only from a `v*` tag.
+
 ## Requirements
 
 - Node.js 20 or newer (developed on 24) and npm
