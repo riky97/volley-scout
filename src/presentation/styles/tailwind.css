@@ -1,0 +1,3 @@
+/* Tailwind v4 entry. Kept as plain CSS so the Tailwind Vite plugin processes it:
+   a Sass @import would inline the file before the plugin ever sees it. */
+@import "tailwindcss";

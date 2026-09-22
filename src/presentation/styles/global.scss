@@ -1,0 +1,205 @@
+// Single global stylesheet entry, imported once by `src/main.tsx`.
+// Declares the design tokens as CSS custom properties (docs/03-ux-flows.md §6) and the
+// handful of global rules (P1 tabular numerals, P3 reduced motion, P5 focus ring,
+// P4 forced-colors) that apply outside any single component.
+
+@use './tokens' as tokens;
+
+// ---------------------------------------------------------------------------------------
+// Light theme (default) — docs/03-ux-flows.md §6.1
+// ---------------------------------------------------------------------------------------
+
+:root,
+[data-theme='light'] {
+  // Surfaces
+  --bg: #f4f6f9;
+  --surface: #ffffff;
+  --surface-2: #e9edf3; // table headers, pad row backgrounds
+  --surface-selected: #e2ecf6; // selected player / skill background
+  --surface-highlight: #fff4cc; // 150 ms new-event flash
+  --border: #c3ccd8; // decorative separators only
+  --border-strong: #7d8a9b; // boundary of interactive components
+
+  // Text
+  --text: #101720;
+  --text-muted: #45525f;
+  --text-inverse: #ffffff;
+
+  // Accent / focus
+  --accent: #17588f;
+  --on-accent: #ffffff;
+  --focus-ring: #1b4fd8;
+
+  // Outcome — solid fill + text-on-light + soft chip background
+  --outcome-point: #0b6e2e;
+  --outcome-point-soft: #dcf2e3;
+  --outcome-positive: #17588f;
+  --outcome-positive-soft: #deebf8;
+  --outcome-neutral: #3f4855;
+  --outcome-neutral-soft: #e7eaef;
+  --outcome-negative: #8a5200;
+  --outcome-negative-soft: #faebd2;
+  --outcome-error: #a32019;
+  --outcome-error-soft: #fbe3e1;
+  --on-outcome: #ffffff; // text on any solid outcome fill
+
+  // Elevation
+  --shadow-1: 0 1px 2px rgb(16 23 32 / 0.08); // cards
+  --shadow-2: 0 8px 24px rgb(16 23 32 / 0.18); // dialogs
+
+  // Type scale (docs/03-ux-flows.md §6.5)
+  --fs-score: 72px; // 88px at 1920x1080, see breakpoint override below
+  --fs-display: 40px;
+  --fs-h1: 32px;
+  --fs-h2: 24px;
+  --fs-h3: 20px;
+  --fs-body-lg: 18px;
+  --fs-body: 16px;
+  --fs-small: 14px; // smallest size in the app
+  --fs-shirt: 28px;
+
+  // Spacing scale (docs/03-ux-flows.md §6.6)
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 48px;
+  --sp-8: 64px;
+
+  // Radii
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --radius-lg: 12px;
+  --radius-xl: 16px;
+  --radius-full: 999px;
+
+  // Focus ring
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  // Hit targets
+  --hit-min: 44px;
+  --hit-live: 64px;
+}
+
+@media (min-width: 1920px) {
+  :root,
+  [data-theme='light'],
+  [data-theme='dark'] {
+    --fs-score: 88px;
+  }
+}
+
+// ---------------------------------------------------------------------------------------
+// Dark theme — docs/03-ux-flows.md §6.2. Applied either by explicit `data-theme="dark"`
+// (user choice, written to <html> before React mounts, see `theme.ts`) or, for
+// `Come il sistema`, by `prefers-color-scheme: dark` guarded so an explicit "light" choice
+// always wins over the OS preference.
+// ---------------------------------------------------------------------------------------
+
+@mixin dark-palette {
+  --bg: #0e1319;
+  --surface: #161d26;
+  --surface-2: #202a36;
+  --surface-selected: #1c3247;
+  --surface-highlight: #3a3413;
+  --border: #2e3a48;
+  --border-strong: #68788a;
+
+  --text: #ecf1f7;
+  --text-muted: #a6b4c4;
+  --text-inverse: #0e1319;
+
+  --accent: #6fb8f2;
+  --on-accent: #0e1319;
+  --focus-ring: #7fa8ff;
+
+  --outcome-point: #5fd98c;
+  --outcome-point-soft: #14331e;
+  --outcome-positive: #6fb8f2;
+  --outcome-positive-soft: #10293d;
+  --outcome-neutral: #afbbc9;
+  --outcome-neutral-soft: #232c38;
+  --outcome-negative: #f0b44a;
+  --outcome-negative-soft: #36270b;
+  --outcome-error: #ff8f84;
+  --outcome-error-soft: #3a1512;
+  --on-outcome: #0e1319;
+
+  --shadow-1: 0 1px 2px rgb(0 0 0 / 0.45);
+  --shadow-2: 0 8px 24px rgb(0 0 0 / 0.6);
+}
+
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    @include dark-palette;
+  }
+}
+
+:root[data-theme='dark'] {
+  @include dark-palette;
+}
+
+// ---------------------------------------------------------------------------------------
+// Global element rules
+// ---------------------------------------------------------------------------------------
+
+html {
+  color-scheme: light dark;
+}
+
+body {
+  margin: 0;
+  background-color: var(--bg);
+  color: var(--text);
+  font-family:
+    'Inter',
+    'Segoe UI',
+    system-ui,
+    sans-serif;
+  font-size: var(--fs-body);
+  line-height: 1.5;
+}
+
+// P1 — numeric data never reflows: scores, tables, shirt numbers.
+.num,
+.tabular-nums {
+  font-variant-numeric: tabular-nums;
+}
+
+// P5 — a 3px focus ring with a 2px offset, `:focus-visible` only, never removed.
+:where(a, button, [role='button'], [role='gridcell'], input, select, textarea, [tabindex]):focus-visible {
+  outline: var(--focus-ring-width) solid var(--focus-ring);
+  outline-offset: var(--focus-ring-offset);
+  border-radius: inherit;
+}
+
+// P3 — zero motion whenever the user asks for it; the 150 ms event flash becomes a
+// persistent left border instead of relying on timing (docs/03-ux-flows.md §8.6).
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
+
+// P4 — the app must remain usable when Windows high-contrast / forced colours are on.
+@media (forced-colors: active) {
+  * {
+    forced-color-adjust: auto;
+  }
+
+  :where(a, button, [role='button'], input, select, textarea)[data-outcome-icon] {
+    forced-color-adjust: none;
+  }
+
+  :where(a, button, [role='button'], [role='gridcell'], input, select, textarea, [tabindex]):focus-visible {
+    outline: 3px solid Highlight;
+  }
+}

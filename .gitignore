@@ -1,0 +1,30 @@
+node_modules
+dist
+dist-ssr
+coverage
+*.local
+.DS_Store
+Thumbs.db
+
+# Tauri
+src-tauri/target
+src-tauri/gen/schemas
+
+# Editors
+.vscode/*
+!.vscode/extensions.json
+.idea
+
+# Logs
+*.log
+npm-debug.log*
+
+# Local data / exports
+*.xlsx
+*.pdf
+local-data/
+
+# Secrets
+.env
+.env.*
+!.env.example

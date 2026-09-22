@@ -1,0 +1,110 @@
+// Design tokens for use inside SCSS Modules (docs/03-ux-flows.md §6).
+// Colours are NOT redefined here: every colour is a CSS custom property declared once in
+// `global.scss` so light/dark theming stays in a single place. This partial only carries
+// the values SCSS itself needs at compile time (spacing, radii, breakpoints, z-index) plus
+// convenience `var(--…)` references for semantic colours, so component styles never
+// hard-code a hex value (docs/03-ux-flows.md §10, gate 1).
+
+// ---------------------------------------------------------------------------------------
+// Spacing scale
+// ---------------------------------------------------------------------------------------
+
+$sp-1: 4px;
+$sp-2: 8px;
+$sp-3: 12px;
+$sp-4: 16px;
+$sp-5: 24px;
+$sp-6: 32px;
+$sp-7: 48px;
+$sp-8: 64px;
+
+$spacing: (
+  1: $sp-1,
+  2: $sp-2,
+  3: $sp-3,
+  4: $sp-4,
+  5: $sp-5,
+  6: $sp-6,
+  7: $sp-7,
+  8: $sp-8,
+);
+
+// ---------------------------------------------------------------------------------------
+// Radii
+// ---------------------------------------------------------------------------------------
+
+$radius-sm: 4px; // badges, letter chips
+$radius-md: 8px; // buttons, inputs, player chips
+$radius-lg: 12px; // cards, panels
+$radius-xl: 16px; // dialogs
+$radius-full: 999px;
+
+// ---------------------------------------------------------------------------------------
+// Breakpoints (px) — the live screen's documented minimum window is 1280×720.
+// ---------------------------------------------------------------------------------------
+
+$bp-live-fallback: 1280px; // below this the live layout collapses to court/pad + drawer
+$bp-desktop: 1366px;
+$bp-desktop-wide: 1920px;
+
+// ---------------------------------------------------------------------------------------
+// Z-index scale
+// ---------------------------------------------------------------------------------------
+
+$z-index: (
+  base: 0,
+  sticky-actionbar: 10,
+  drawer: 20,
+  dropdown: 30,
+  dialog: 40,
+  toast: 50,
+);
+
+@function z($layer) {
+  @return map-get($z-index, $layer);
+}
+
+// ---------------------------------------------------------------------------------------
+// Hit targets (docs/03-ux-flows.md P2)
+// ---------------------------------------------------------------------------------------
+
+$hit-min: 44px; // everywhere
+$hit-live: 64px; // Scout live player chips, skill buttons, outcome buttons
+
+// ---------------------------------------------------------------------------------------
+// Semantic colour references — always `var(--token)`, never a literal hex.
+// ---------------------------------------------------------------------------------------
+
+$color-bg: var(--bg);
+$color-surface: var(--surface);
+$color-surface-2: var(--surface-2);
+$color-surface-selected: var(--surface-selected);
+$color-surface-highlight: var(--surface-highlight);
+$color-border: var(--border);
+$color-border-strong: var(--border-strong);
+
+$color-text: var(--text);
+$color-text-muted: var(--text-muted);
+$color-text-inverse: var(--text-inverse);
+
+$color-accent: var(--accent);
+$color-on-accent: var(--on-accent);
+$color-focus-ring: var(--focus-ring);
+
+$color-outcome-point: var(--outcome-point);
+$color-outcome-point-soft: var(--outcome-point-soft);
+$color-outcome-positive: var(--outcome-positive);
+$color-outcome-positive-soft: var(--outcome-positive-soft);
+$color-outcome-neutral: var(--outcome-neutral);
+$color-outcome-neutral-soft: var(--outcome-neutral-soft);
+$color-outcome-negative: var(--outcome-negative);
+$color-outcome-negative-soft: var(--outcome-negative-soft);
+$color-outcome-error: var(--outcome-error);
+$color-outcome-error-soft: var(--outcome-error-soft);
+$color-on-outcome: var(--on-outcome);
+
+$shadow-1: var(--shadow-1);
+$shadow-2: var(--shadow-2);
+
+$focus-ring-width: var(--focus-ring-width);
+$focus-ring-offset: var(--focus-ring-offset);

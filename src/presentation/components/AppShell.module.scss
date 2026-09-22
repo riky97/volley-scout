@@ -1,0 +1,78 @@
+@use '../styles/tokens' as t;
+
+.shell {
+  display: grid;
+  grid-template-rows: auto 1fr;
+  min-height: 100vh;
+  background: var(--bg);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: t.$sp-5;
+  padding: t.$sp-3 t.$sp-5;
+  border-bottom: 1px solid var(--border);
+  background: var(--surface);
+}
+
+.brand {
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.navList {
+  display: flex;
+  gap: t.$sp-2;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.navLink {
+  display: inline-flex;
+  align-items: center;
+  min-height: t.$hit-min;
+  padding: 0 t.$sp-4;
+  border: 1px solid transparent;
+  border-radius: t.$radius-md;
+  color: var(--text-muted);
+  text-decoration: none;
+
+  &:hover {
+    background: var(--surface-2);
+  }
+}
+
+.navLinkActive {
+  border-color: var(--border-strong);
+  background: var(--surface-selected);
+  color: var(--text);
+  font-weight: 600;
+}
+
+.saveState {
+  margin-left: auto;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.saveStateError {
+  color: var(--outcome-error);
+  font-weight: 600;
+}
+
+.main {
+  padding: t.$sp-5;
+}
+
+// Live scouting: no page padding, the screen is a fixed layout of its own.
+.shellLive .main {
+  padding: 0;
+  overflow: hidden;
+}
+
+.shellLive .header {
+  padding-block: t.$sp-2;
+}
