@@ -5,6 +5,24 @@ No accounts, no cloud, no telemetry: everything stays on the machine it runs on.
 
 The interface is in Italian; the code is in English.
 
+## Download (Windows)
+
+Ready-made installers are published on the
+[Releases page](https://github.com/riky97/volley-scout/releases/latest): take the `.exe`
+(guided setup) or the `.msi`.
+
+The installers are not code-signed, so Windows SmartScreen shows a warning the first time:
+choose "Ulteriori informazioni" and then "Esegui comunque".
+
+A new release is produced automatically for every version tag:
+
+```bash
+npm version patch        # bumps package.json and creates the tag
+git push --follow-tags   # the Release workflow builds and publishes the installers
+```
+
+Keep `src-tauri/tauri.conf.json` `version` in step with `package.json`.
+
 ## Requirements
 
 - Node.js 20 or newer (developed on 24) and npm
