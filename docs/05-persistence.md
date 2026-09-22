@@ -67,8 +67,9 @@ score was recalculated.
 
 ## Shutdown
 
-In the desktop build `useCloseGuard` intercepts Tauri's `onCloseRequested`: if a write is still
-pending it holds the close, flushes, then destroys the window. Because every rally-terminating event
+In the desktop build `useCloseGuard` intercepts Tauri's `onCloseRequested` and always asks for
+confirmation first. On confirm it flushes any pending write, then destroys the window; on cancel
+nothing happens. The dialog says explicitly when a save is still in flight. Because every rally-terminating event
 is already flushed synchronously, that window is at most one debounced low-risk edit wide.
 
 **Documented OS limits.** A `beforeunload`-style prompt is the only tool the browser build has, and

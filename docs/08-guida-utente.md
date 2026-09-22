@@ -134,6 +134,10 @@ Se il programma si chiude per errore, alla riapertura la Home propone **Riprendi
 l'ultima partita non terminata. Creare una nuova partita non cancella mai quella in corso: la
 ritrovi sempre in **Archivio partite**.
 
+Premendo la **X** della finestra l'applicazione chiede conferma prima di chiudersi: scegli
+**Sì, chiudi** per uscire oppure **Annulla** per restare. Se un salvataggio è ancora in corso viene
+completato prima della chiusura.
+
 Se un file di partita risulta danneggiato, il programma lo mette da parte (non lo cancella) e ti
 avvisa, continuando a funzionare normalmente.
 

@@ -1,16 +1,29 @@
-import { useEffect } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import { getCurrentWindow } from '@tauri-apps/api/window';
 import { useMatchStore } from '@application/stores/matchStore';
 import { isTauri } from '@infrastructure/storage';
 
+export interface CloseGuard {
+  /** True while the confirmation dialog is showing. */
+  readonly isConfirming: boolean;
+  /** True when a save is still in flight, so the dialog can say so. */
+  readonly hasUnsavedChanges: boolean;
+  readonly confirmClose: () => void;
+  readonly cancelClose: () => void;
+}
+
 /**
- * Makes an accidental close safe rather than merely noisy: the pending write is flushed before
- * the window goes away. The browser tab case can only ask the OS-provided generic prompt, which
- * is why the desktop build intercepts `onCloseRequested` instead.
+ * Turns the window close button into a deliberate action: the request is intercepted, the
+ * operator confirms, and only then is the pending write flushed and the window destroyed.
+ * Closing during a match is otherwise one stray click away.
  */
-export function useCloseGuard(): void {
+export function useCloseGuard(): CloseGuard {
+  const [isConfirming, setIsConfirming] = useState(false);
+  const [hasUnsavedChanges, setHasUnsavedChanges] = useState(false);
+
   useEffect(() => {
     if (!isTauri()) {
+      // A browser tab cannot host our own dialog: the OS-provided prompt is all there is.
       const onBeforeUnload = (event: BeforeUnloadEvent): void => {
         if (!useMatchStore.getState().hasUnsavedChanges()) return;
         event.preventDefault();
@@ -25,12 +38,10 @@ export function useCloseGuard(): void {
     let disposed = false;
 
     void getCurrentWindow()
-      .onCloseRequested(async (event) => {
-        if (!useMatchStore.getState().hasUnsavedChanges()) return;
-        // Hold the close just long enough to finish the pending write, then let it proceed.
+      .onCloseRequested((event) => {
         event.preventDefault();
-        await useMatchStore.getState().flushPendingSave();
-        await getCurrentWindow().destroy();
+        setHasUnsavedChanges(useMatchStore.getState().hasUnsavedChanges());
+        setIsConfirming(true);
       })
       .then((stop) => {
         if (disposed) stop();
@@ -42,4 +53,19 @@ export function useCloseGuard(): void {
       unlisten?.();
     };
   }, []);
+
+  const confirmClose = useCallback(() => {
+    setIsConfirming(false);
+    void (async () => {
+      // Never close on top of a write still on its way to disk.
+      await useMatchStore.getState().flushPendingSave();
+      await getCurrentWindow().destroy();
+    })();
+  }, []);
+
+  const cancelClose = useCallback(() => {
+    setIsConfirming(false);
+  }, []);
+
+  return { isConfirming, hasUnsavedChanges, confirmClose, cancelClose };
 }

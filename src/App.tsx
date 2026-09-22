@@ -16,6 +16,7 @@ import { SettingsPage } from '@presentation/pages/SettingsPage';
 import { useSettingsStore } from '@application/stores/settingsStore';
 import { applyTheme } from '@presentation/styles/theme';
 import { useCloseGuard } from '@presentation/hooks/useCloseGuard';
+import { CloseConfirmationDialog } from '@presentation/components/CloseConfirmationDialog';
 
 export function App(): React.JSX.Element {
   const loadSettings = useSettingsStore((state) => state.load);
@@ -29,7 +30,7 @@ export function App(): React.JSX.Element {
     applyTheme(theme);
   }, [theme]);
 
-  useCloseGuard();
+  const closeGuard = useCloseGuard();
 
   return (
     <ErrorBoundary>
@@ -50,6 +51,12 @@ export function App(): React.JSX.Element {
           </Routes>
         </AppShell>
         <Toaster />
+        <CloseConfirmationDialog
+          open={closeGuard.isConfirming}
+          hasUnsavedChanges={closeGuard.hasUnsavedChanges}
+          onConfirm={closeGuard.confirmClose}
+          onCancel={closeGuard.cancelClose}
+        />
       </HashRouter>
     </ErrorBoundary>
   );

@@ -380,6 +380,14 @@ export const DIALOGS = {
     cancel: 'Annulla',
     confirm: 'Elimina',
   },
+  confirmQuit: {
+    title: 'Chiudere Volley Scout?',
+    body: 'La partita in corso resta salvata e potrai riprenderla alla prossima apertura.',
+    bodyUnsaved:
+      'Ci sono modifiche non ancora salvate: verranno salvate prima della chiusura.',
+    cancel: 'Annulla',
+    confirm: 'Sì, chiudi',
+  },
   unsavedOnClose: {
     title: "Chiudere l'applicazione?",
     body: 'Sono presenti modifiche non ancora salvate. Chiudendo ora potrebbero andare perse.',
