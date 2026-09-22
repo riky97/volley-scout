@@ -8,7 +8,10 @@ const resolvePath = (relative: string): string =>
   fileURLToPath(new URL(relative, import.meta.url));
 
 // Tauri drives the dev server on a fixed port and needs a predictable build output.
+// Relative asset URLs keep one build usable both from the Tauri root and from a
+// GitHub Pages sub-path, so the desktop bundle and the web fallback stay identical.
 export default defineConfig({
+  base: './',
   plugins: [react(), tailwindcss()],
   resolve: {
     alias: {

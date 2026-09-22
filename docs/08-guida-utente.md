@@ -11,6 +11,20 @@ programma.
 
 Non servono registrazioni, account o abbonamenti.
 
+### Versione da tablet (riserva)
+
+Se il portatile non c'è, la stessa applicazione si apre anche dal browser, all'indirizzo
+<https://riky97.github.io/volley-scout/>. Aprila una volta con la connessione attiva e aggiungila
+alla schermata Home (su iPad: il pulsante **Condividi**, poi **Aggiungi a Home**); da quel momento
+funziona anche senza internet.
+
+È una riserva, non un sostituto. Il programma installato salva le partite in file veri sul disco;
+la versione da browser le tiene nella memoria del browser, che il sistema può ripulire da solo —
+iOS è il più severo. **Dopo una partita scoutata da tablet, esporta subito il file JSON**: è la tua
+copia di sicurezza. Per scoutare una partita vera resta consigliato il programma installato.
+
+Sul tablet non hai la tastiera, quindi le scorciatoie non ci sono: si registra toccando i pulsanti.
+
 ## 2. Prima di una partita
 
 ### Creare la partita
@@ -158,7 +172,10 @@ avvisa, continuando a funzionare normalmente.
 squadra; degli avversari tiene il punteggio con **Punto avversario**.
 
 **Come faccio un backup?** Esporta la partita in JSON, oppure copia la cartella dati indicata nelle
-Impostazioni.
+Impostazioni. Dalla versione da browser la cartella dati non esiste: l'unico backup è il file JSON.
+
+**Le partite fatte sul tablet le ritrovo sul computer?** Non da sole: le due versioni salvano in
+posti diversi. Esporta il JSON dal tablet e importalo dal programma installato.
 
 **Il libero può battere?** Le regole non lo prevedono. Se il libero finisce in posizione P1 il
 programma lo segnala, ma non ti blocca.

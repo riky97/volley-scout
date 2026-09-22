@@ -23,6 +23,22 @@ git push --follow-tags   # the Release workflow builds and publishes the install
 
 Keep `src-tauri/tauri.conf.json` `version` in step with `package.json`.
 
+## Web fallback (tablets)
+
+The same build also runs as a web app at
+<https://riky97.github.io/volley-scout/>, published by the `Pages` workflow on every push to
+`master`. It exists for the days the laptop is not there: open it once with a connection, add it
+to the home screen, and a service worker keeps it working offline afterwards.
+
+It is a fallback, not a replacement. The desktop build writes real files to disk; the web build
+stores matches in the browser's IndexedDB, which the browser may evict — iOS is the strictest
+about this. The app asks for persistent storage on startup, but granting it is the browser's
+call. Export a JSON backup after a match scouted this way.
+
+```bash
+npm run build:web    # vite build + scripts/buildServiceWorker.mjs
+```
+
 ## Requirements
 
 - Node.js 20 or newer (developed on 24) and npm
@@ -67,6 +83,10 @@ The installers are written to `src-tauri/target/release/bundle/`.
 In the OS app-data folder (`%APPDATA%\it.volleyscout.app\data` on Windows): one JSON file per match,
 one per saved roster, plus the preferences. The exact path is shown in the settings screen.
 Exports (PDF, XLSX, JSON) are written only to the location picked in the save dialog.
+
+In the web fallback there is no app-data folder: the same JSON documents live in the browser's
+IndexedDB database `volley-scout`, and exports go to the browser's downloads. The two builds read
+and write the same format, so a match exported from one opens in the other.
 
 ## Documentation
 

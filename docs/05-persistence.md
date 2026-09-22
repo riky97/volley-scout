@@ -77,3 +77,22 @@ browsers deliberately ignore custom text in it. Neither platform can intercept a
 kill (`taskkill /f`, Task Manager "End task"), or an OS shutdown that does not deliver a close event.
 This is precisely why the design does not rely on the close handler: durability comes from flushing
 after every scored rally, from atomic renames, and from the append-only log — not from the dialog.
+
+## Durability in the web fallback
+
+The browser build is the tablet fallback; the desktop build stays the primary tool. It swaps only
+the adapter: `indexedDbStorage` stores the same JSON documents under the same relative paths, in the
+IndexedDB database `volley-scout`. Schema version, Zod validation, quarantine of corrupt documents
+and the save queue are unchanged, so recovery behaves identically.
+
+What does change is the guarantee underneath. IndexedDB is evictable storage: a browser may clear it
+under pressure, and iOS clears it for sites not opened for several days. `requestPersistentStorage`
+asks for the persistent bucket on startup, which lifts an installed home-screen app out of the
+automatic eviction pool — but granting it is entirely the browser's decision and is never assumed.
+Because of this, the user guide tells the operator to export a JSON backup after any match scouted
+from a tablet. The `.exe` remains the recommended way to scout a real match.
+
+Offline start-up comes from `scripts/buildServiceWorker.mjs`, which precaches the exact asset list
+of the build, including the lazily loaded XLSX and PDF chunks, so exporting works without a
+connection. The worker never calls `skipWaiting`: a newly deployed build waits until every tab is
+closed, so assets can never swap under a match in progress.
