@@ -1,0 +1,75 @@
+@use '../../styles/tokens' as t;
+
+// Composite selected/serving/disabled visual states — kept out of Tailwind because the
+// serving badge and the selection ring interact with each other and with dark theme.
+
+.chip {
+  position: relative;
+  display: flex;
+  min-width: t.$hit-min;
+  min-height: t.$hit-min;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  padding: t.$sp-2 t.$sp-3;
+  border: 2px solid var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.chip:hover:not(:disabled) {
+  background: var(--surface-2);
+}
+
+.chip:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.selected {
+  border-color: var(--accent);
+  background: var(--surface-selected);
+}
+
+.number {
+  font-size: var(--fs-body-lg);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.name {
+  max-width: 84px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.badges {
+  position: absolute;
+  top: -8px;
+  right: -8px;
+  display: flex;
+  gap: 2px;
+}
+
+.badge {
+  display: inline-flex;
+  min-width: 18px;
+  height: 18px;
+  align-items: center;
+  justify-content: center;
+  border-radius: t.$radius-full;
+  background: var(--accent);
+  color: var(--on-accent);
+  font-size: 10px;
+  font-weight: 700;
+  line-height: 1;
+}

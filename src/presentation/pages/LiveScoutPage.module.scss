@@ -1,0 +1,109 @@
+@use '../styles/tokens' as t;
+
+// Fixed three-row layout: only the events column scrolls, the pad and the action bar
+// never reflow under the operator mid-rally.
+.layout {
+  display: grid;
+  grid-template-areas:
+    'scoreboard scoreboard scoreboard'
+    'court pad events'
+    'actionbar actionbar actionbar';
+  grid-template-columns: minmax(260px, 3fr) minmax(420px, 6fr) minmax(280px, 3fr);
+  grid-template-rows: auto minmax(0, 1fr) auto;
+  gap: t.$sp-3;
+  height: calc(100vh - 64px);
+  padding: t.$sp-3;
+}
+
+.scoreboardArea {
+  grid-area: scoreboard;
+}
+
+.courtArea {
+  display: flex;
+  flex-direction: column;
+  gap: t.$sp-3;
+  grid-area: court;
+  min-height: 0;
+  padding: t.$sp-3;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+}
+
+.padArea {
+  grid-area: pad;
+  min-height: 0;
+  overflow-y: auto;
+}
+
+.eventsArea {
+  grid-area: events;
+  min-height: 0;
+}
+
+.actionBar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: t.$sp-3;
+  grid-area: actionbar;
+  padding: t.$sp-3;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+}
+
+.counters {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: t.$sp-1;
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+
+  dt {
+    display: none;
+  }
+
+  dd {
+    margin: 0;
+  }
+}
+
+.courtActions {
+  display: flex;
+  flex-direction: column;
+  gap: t.$sp-2;
+  margin-top: auto;
+}
+
+.dialogActions {
+  display: flex;
+  gap: t.$sp-3;
+}
+
+.shortcutList {
+  margin: 0;
+  padding-left: t.$sp-5;
+  font-size: var(--fs-small);
+  line-height: 1.8;
+  color: var(--text);
+}
+
+.placeholder {
+  padding: t.$sp-6;
+}
+
+@media (max-width: 1279px) {
+  .layout {
+    grid-template-areas:
+      'scoreboard scoreboard'
+      'court pad'
+      'events events'
+      'actionbar actionbar';
+    grid-template-columns: minmax(240px, 4fr) minmax(400px, 8fr);
+    grid-template-rows: auto minmax(0, 1fr) minmax(160px, auto) auto;
+    height: auto;
+  }
+}

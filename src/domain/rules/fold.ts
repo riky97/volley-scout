@@ -140,9 +140,12 @@ export function foldEvents(
       const rotationBefore = set.rotationOffset;
 
       const terminal =
-        event.type === 'opponent_point'
-          ? { isTerminal: true, pointTo: 'them' as TeamSide }
-          : isTerminalOutcome(event.skill, event.outcome);
+        event.type === 'rally'
+          ? isTerminalOutcome(event.skill, event.outcome)
+          : {
+              isTerminal: true,
+              pointTo: (event.type === 'our_point' ? 'us' : 'them') satisfies TeamSide as TeamSide,
+            };
 
       if (!terminal.isTerminal || terminal.pointTo === null) {
         // Non-terminal quality event: nothing about the set changes.
@@ -187,6 +190,8 @@ export function foldEvents(
 
       if (event.type === 'rally') {
         normalised.push({ ...event, ...rallyFields, pointTo, isTerminal: true });
+      } else if (event.type === 'our_point') {
+        normalised.push({ ...event, ...rallyFields, pointTo: 'us' });
       } else {
         normalised.push({ ...event, ...rallyFields, pointTo: 'them' });
       }

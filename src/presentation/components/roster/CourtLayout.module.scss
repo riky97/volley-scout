@@ -1,0 +1,86 @@
+@use '../../styles/tokens' as t;
+
+// 2x3 court geometry with a net line between the front and back row — geometry and the
+// net divider are not expressible as plain Tailwind utilities without a lot of arbitrary
+// values, so this stays a module per docs/03-ux-flows.md §7.
+
+.court {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  grid-template-rows: repeat(2, 1fr);
+  gap: t.$sp-2;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+  padding: t.$sp-3;
+}
+
+.net {
+  grid-column: 1 / -1;
+  height: 2px;
+  margin: 0 0 t.$sp-1;
+  background: var(--border-strong);
+}
+
+.slot {
+  display: flex;
+  min-height: 96px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: t.$sp-1;
+  border: 2px dashed var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface-2);
+  color: var(--text);
+  cursor: pointer;
+  transition:
+    border-color 120ms ease,
+    background-color 120ms ease;
+}
+
+.slot:hover {
+  border-color: var(--accent);
+}
+
+.filled {
+  border-style: solid;
+  background: var(--surface);
+}
+
+.serving {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 2px var(--surface-selected) inset;
+}
+
+.positionLabel {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.shirt {
+  font-size: var(--fs-shirt);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+.playerName {
+  max-width: 100px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.empty {
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.servingMark {
+  font-size: var(--fs-small);
+  color: var(--accent);
+  font-weight: 700;
+}

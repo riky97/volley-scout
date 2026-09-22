@@ -7,13 +7,13 @@ import styles from './Dialog.module.scss';
 export interface DialogProps {
   readonly open: boolean;
   readonly title: string;
-  readonly description?: string;
-  readonly confirmLabel?: string;
-  readonly cancelLabel?: string;
-  readonly destructive?: boolean;
-  readonly onConfirm?: () => void;
+  readonly description?: string | undefined;
+  readonly confirmLabel?: string | undefined;
+  readonly cancelLabel?: string | undefined;
+  readonly destructive?: boolean | undefined;
+  readonly onConfirm?: (() => void) | undefined;
   readonly onCancel: () => void;
-  readonly children?: ReactNode;
+  readonly children?: ReactNode | undefined;
 }
 
 /**

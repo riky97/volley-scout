@@ -129,6 +129,7 @@ export function editEvent(
       break;
     }
     case 'opponent_point':
+    case 'our_point':
       updated = { ...target, comment: patch.comment ?? target.comment };
       break;
     case 'note':

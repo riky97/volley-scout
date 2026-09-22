@@ -85,6 +85,13 @@ export const scoutEventSchema = z.discriminatedUnion('type', [
   }),
   z.object({
     ...eventBase,
+    ...rallyFields,
+    type: z.literal('our_point'),
+    pointTo: z.literal('us'),
+    comment: z.string().max(200),
+  }),
+  z.object({
+    ...eventBase,
     type: z.literal('timeout'),
     team: teamSideSchema,
     atScore: scoreSchema,

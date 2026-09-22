@@ -93,6 +93,13 @@ export interface OpponentPointEvent extends ScoutEventBase, RallyAffecting {
   readonly comment: string;
 }
 
+/** Point won by us with no detail recorded: keeps the scoreboard fast when detail is not needed. */
+export interface OurPointEvent extends ScoutEventBase, RallyAffecting {
+  readonly type: 'our_point';
+  readonly pointTo: 'us';
+  readonly comment: string;
+}
+
 export interface TimeoutEvent extends ScoutEventBase {
   readonly type: 'timeout';
   readonly team: TeamSide;
@@ -133,6 +140,7 @@ export interface NoteEvent extends ScoutEventBase {
 
 export type ScoutEvent =
   | RallyEvent
+  | OurPointEvent
   | OpponentPointEvent
   | TimeoutEvent
   | SubstitutionEvent
@@ -142,6 +150,8 @@ export type ScoutEvent =
 
 export type ScoutEventType = ScoutEvent['type'];
 
-export function isRallyAffecting(event: ScoutEvent): event is RallyEvent | OpponentPointEvent {
-  return event.type === 'rally' || event.type === 'opponent_point';
+export function isRallyAffecting(
+  event: ScoutEvent,
+): event is RallyEvent | OurPointEvent | OpponentPointEvent {
+  return event.type === 'rally' || event.type === 'our_point' || event.type === 'opponent_point';
 }

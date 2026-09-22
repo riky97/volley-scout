@@ -184,7 +184,10 @@ export function computeTeamStatistics(input: TeamStatisticsInput): TeamStatistic
     totalActions: events.filter((event) => event.type === 'rally').length,
     pointsScored: input.pointsScored,
     pointsConceded: input.pointsConceded,
-    pointsFromActions: count((event) => event.outcome === 'point'),
+    // A generic "our point" is still a point from play, just without a player attached.
+    pointsFromActions:
+      count((event) => event.outcome === 'point') +
+      events.filter((event) => event.type === 'our_point').length,
     errors: count((event) => event.outcome === 'error'),
     opponentPoints: events.filter((event) => event.type === 'opponent_point').length,
     attackAttempts,

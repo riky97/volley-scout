@@ -1,0 +1,56 @@
+// Shared table primitives for the final report. Tailwind handles layout/spacing around these
+// tables; SCSS is used here because the wide statistics tables need a horizontal-scroll
+// container with a sticky first column, which is not expressible with simple utilities alone.
+@use '../../styles/tokens' as t;
+
+.scrollArea {
+  overflow-x: auto;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  white-space: nowrap;
+
+  th,
+  td {
+    padding: t.$sp-2 t.$sp-3;
+    text-align: right;
+    border-bottom: 1px solid var(--border);
+  }
+
+  th:first-child,
+  td:first-child {
+    text-align: left;
+    position: sticky;
+    left: 0;
+    background: var(--surface);
+  }
+
+  th:nth-child(2),
+  td:nth-child(2) {
+    text-align: left;
+  }
+
+  thead th {
+    background: var(--surface-2);
+    font-weight: 600;
+    position: sticky;
+    top: 0;
+  }
+
+  tbody tr:nth-child(even) td {
+    background: color-mix(in srgb, var(--surface-2) 40%, transparent);
+  }
+
+  tbody tr:nth-child(even) td:first-child {
+    background: var(--surface-2);
+  }
+}
+
+.gap {
+  color: var(--text-muted);
+}

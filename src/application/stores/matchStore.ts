@@ -17,6 +17,7 @@ import {
   abandonMatch,
   appendNote,
   appendOpponentPoint,
+  appendOurPoint,
   appendRallyEvent,
   appendSubstitution,
   appendTimeout,
@@ -67,6 +68,7 @@ export interface MatchStoreState {
     outcome: EventOutcome;
     comment?: string;
   }) => void;
+  recordOurPoint: () => void;
   recordOpponentPoint: () => void;
   recordTimeout: (team: TeamSide) => void;
   recordSubstitution: (playerOutId: Id, playerInId: Id) => void;
@@ -215,6 +217,11 @@ export const useMatchStore = create<MatchStoreState>((set, get) => ({
         timestamp: nowIso(),
       }),
     );
+  },
+
+  recordOurPoint: () => {
+    set({ redoBuffer: null });
+    mutate((match) => appendOurPoint({ match, id: newId(), timestamp: nowIso() }));
   },
 
   recordOpponentPoint: () => {

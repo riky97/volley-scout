@@ -1,0 +1,185 @@
+@use '../../styles/tokens' as t;
+
+.pad {
+  display: flex;
+  flex-direction: column;
+  gap: t.$sp-3;
+  height: 100%;
+  padding: t.$sp-3;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  gap: t.$sp-3;
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.buffer {
+  font-size: var(--fs-body);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.cancel {
+  min-height: t.$hit-min;
+  margin-left: auto;
+  padding: 0 t.$sp-3;
+  border: 1px solid var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.hint {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.step {
+  display: flex;
+  flex-direction: column;
+  gap: t.$sp-2;
+}
+
+.stepTitle {
+  margin: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+}
+
+.players {
+  display: flex;
+  flex-wrap: wrap;
+  gap: t.$sp-2;
+}
+
+.player {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-width: 84px;
+  min-height: t.$hit-live;
+  padding: t.$sp-1 t.$sp-2;
+  border: 1px solid var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  color: var(--text);
+}
+
+// Bench players stay reachable but read as secondary.
+.bench {
+  border-style: dashed;
+  color: var(--text-muted);
+}
+
+.shirt {
+  font-size: var(--fs-shirt);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.playerName {
+  max-width: 84px;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.skills {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: t.$sp-2;
+}
+
+.skill {
+  min-height: t.$hit-live;
+  padding: 0 t.$sp-2;
+  border: 1px solid var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  font-size: var(--fs-body-lg);
+  color: var(--text);
+
+  &:disabled {
+    opacity: 0.45;
+  }
+}
+
+.selected {
+  border-width: 3px;
+  border-color: var(--accent);
+  background: var(--surface-selected);
+  font-weight: 700;
+}
+
+.outcomes {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: t.$sp-2;
+}
+
+.outcome {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 2px;
+  min-height: t.$hit-live;
+  padding: 0 t.$sp-1;
+  border: 1px solid var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--text);
+
+  &:disabled {
+    opacity: 0.4;
+  }
+}
+
+.outcomeSymbol {
+  font-size: var(--fs-body-lg);
+}
+
+.point {
+  border-color: var(--outcome-point);
+  background: var(--outcome-point-soft);
+}
+
+.positive {
+  border-color: var(--outcome-positive);
+  background: var(--outcome-positive-soft);
+}
+
+.neutral {
+  border-color: var(--outcome-neutral);
+  background: var(--outcome-neutral-soft);
+}
+
+.negative {
+  border-color: var(--outcome-negative);
+  background: var(--outcome-negative-soft);
+}
+
+.error {
+  border-color: var(--outcome-error);
+  background: var(--outcome-error-soft);
+}

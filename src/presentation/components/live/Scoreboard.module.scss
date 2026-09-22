@@ -1,0 +1,86 @@
+@use '../../styles/tokens' as t;
+
+.scoreboard {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: t.$sp-4;
+  padding: t.$sp-3 t.$sp-4;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+}
+
+.team {
+  display: grid;
+  grid-template-rows: auto auto auto;
+  justify-items: center;
+  min-width: 0;
+}
+
+.teamName {
+  margin: 0;
+  overflow: hidden;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.serving {
+  margin: 0;
+  font-size: var(--fs-small);
+  font-weight: 600;
+  color: var(--accent);
+}
+
+.points {
+  margin: 0;
+  font-size: var(--fs-score);
+  font-variant-numeric: tabular-nums;
+  font-weight: 800;
+  line-height: 1;
+  color: var(--text);
+}
+
+.sets {
+  margin: 0;
+  font-size: var(--fs-small);
+  color: var(--text-muted);
+}
+
+.setsColumn {
+  min-width: 180px;
+}
+
+.setTable {
+  border-collapse: collapse;
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+
+  th,
+  td {
+    padding: 2px t.$sp-2;
+    text-align: center;
+    color: var(--text-muted);
+  }
+
+  thead th {
+    border-bottom: 1px solid var(--border);
+    color: var(--text);
+  }
+
+  tbody th {
+    max-width: 120px;
+    overflow: hidden;
+    text-align: left;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  tbody td {
+    font-weight: 600;
+    color: var(--text);
+  }
+}

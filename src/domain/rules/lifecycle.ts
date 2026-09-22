@@ -190,6 +190,37 @@ export function appendOpponentPoint(input: AppendOpponentPointInput): Match {
   return append(match, event, timestamp);
 }
 
+export interface AppendOurPointInput {
+  readonly match: Match;
+  readonly comment?: string | undefined;
+  readonly id: Id;
+  readonly timestamp: IsoTimestamp;
+}
+
+/** A point for us with no detail: the fastest way to keep the scoreboard true. */
+export function appendOurPoint(input: AppendOurPointInput): Match {
+  const { match, id, timestamp } = input;
+  assertOpen(match);
+  const set = requireLiveSet(match);
+
+  const event: ScoutEvent = {
+    type: 'our_point',
+    id,
+    timestamp,
+    setIndex: set.index,
+    sequence: nextSequence(match),
+    comment: input.comment ?? '',
+    pointTo: 'us',
+    scoreBefore: { us: set.ourPoints, them: set.theirPoints },
+    scoreAfter: { us: set.ourPoints + 1, them: set.theirPoints },
+    servingBefore: set.servingTeam,
+    servingAfter: 'us',
+    rotationBefore: set.rotationOffset,
+    rotationAfter: set.rotationOffset,
+  };
+  return append(match, event, timestamp);
+}
+
 export interface AppendTimeoutInput {
   readonly match: Match;
   readonly team: TeamSide;

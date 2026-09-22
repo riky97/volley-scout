@@ -2,9 +2,9 @@ import type { ReactNode } from 'react';
 import clsx from 'clsx';
 
 export interface CardProps {
-  readonly title?: ReactNode;
-  readonly actions?: ReactNode;
-  readonly className?: string;
+  readonly title?: ReactNode | undefined;
+  readonly actions?: ReactNode | undefined;
+  readonly className?: string | undefined;
   readonly children: ReactNode;
 }
 

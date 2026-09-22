@@ -5,9 +5,9 @@ export type ButtonVariant = 'primary' | 'secondary' | 'ghost' | 'danger';
 export type ButtonSize = 'small' | 'medium' | 'large' | 'live';
 
 export interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  readonly variant?: ButtonVariant;
-  readonly size?: ButtonSize;
-  readonly fullWidth?: boolean;
+  readonly variant?: ButtonVariant | undefined;
+  readonly size?: ButtonSize | undefined;
+  readonly fullWidth?: boolean | undefined;
   readonly ref?: Ref<HTMLButtonElement>;
   readonly children: ReactNode;
 }

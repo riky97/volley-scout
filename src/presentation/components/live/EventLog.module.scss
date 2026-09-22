@@ -1,0 +1,123 @@
+@use '../../styles/tokens' as t;
+
+.log {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  height: 100%;
+  border: 1px solid var(--border);
+  border-radius: t.$radius-lg;
+  background: var(--surface);
+}
+
+.header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: t.$sp-3;
+  border-bottom: 1px solid var(--border);
+}
+
+.title {
+  margin: 0;
+  font-size: var(--fs-h3);
+  font-weight: 700;
+  color: var(--text);
+}
+
+.empty {
+  padding: t.$sp-5 t.$sp-3;
+  text-align: center;
+  color: var(--text-muted);
+}
+
+.list {
+  flex: 1;
+  margin: 0;
+  padding: 0;
+  overflow-y: auto;
+  list-style: none;
+}
+
+.row {
+  display: grid;
+  grid-template-columns: 56px 40px 1fr auto;
+  align-items: center;
+  gap: t.$sp-2;
+  padding: t.$sp-2 t.$sp-3;
+  border-bottom: 1px solid var(--border);
+  border-left: 4px solid transparent;
+}
+
+.score {
+  font-size: var(--fs-small);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  color: var(--text);
+}
+
+.symbol {
+  font-size: var(--fs-body);
+  font-weight: 700;
+}
+
+.text {
+  display: flex;
+  min-width: 0;
+  flex-direction: column;
+}
+
+.primary {
+  overflow: hidden;
+  font-size: var(--fs-body);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text);
+}
+
+.secondary {
+  overflow: hidden;
+  font-size: var(--fs-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  color: var(--text-muted);
+}
+
+.delete {
+  min-width: t.$hit-min;
+  min-height: t.$hit-min;
+  border: 1px solid transparent;
+  border-radius: t.$radius-md;
+  background: transparent;
+  color: var(--text-muted);
+
+  &:hover {
+    border-color: var(--border-strong);
+    color: var(--outcome-error);
+  }
+}
+
+.point {
+  border-left-color: var(--outcome-point);
+}
+
+.positive {
+  border-left-color: var(--outcome-positive);
+}
+
+.neutral {
+  border-left-color: var(--outcome-neutral);
+}
+
+.negative {
+  border-left-color: var(--outcome-negative);
+}
+
+.error {
+  border-left-color: var(--outcome-error);
+}
+
+.structural {
+  border-left-color: var(--border-strong);
+  background: var(--surface-2);
+}
