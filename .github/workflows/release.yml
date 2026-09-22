@@ -6,6 +6,11 @@ on:
     tags:
       - 'v*'
 
+# One run per ref: two concurrent runs would race to upload the same release assets.
+concurrency:
+  group: release-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   windows:
     name: Windows installers

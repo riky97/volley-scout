@@ -5,6 +5,11 @@ on:
     branches: [master]
   pull_request:
 
+# One run per ref: two concurrent runs would race to upload the same release assets.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
 jobs:
   frontend:
     name: Typecheck, lint, test, build
