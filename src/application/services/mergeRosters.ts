@@ -1,4 +1,5 @@
 import type { RosterTemplate } from '@domain/index';
+import { isNewer } from './isNewer';
 
 export interface RosterMerge {
   /** Rosters to write: new ones plus those the backup holds a newer copy of. */
@@ -27,7 +28,7 @@ export function mergeRosters(
     if (current === undefined) {
       added += 1;
       toSave.push(roster);
-    } else if (roster.updatedAt > current.updatedAt) {
+    } else if (isNewer(roster.updatedAt, current.updatedAt)) {
       updated += 1;
       toSave.push(roster);
     } else {
