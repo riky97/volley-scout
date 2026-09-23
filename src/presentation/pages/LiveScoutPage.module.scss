@@ -95,15 +95,53 @@
   padding: t.$sp-6;
 }
 
+// Tablets: the viewport is too short to hold every panel at full size, so the log goes last and
+// the action bar sits right under the pad. The log is capped and scrolls inside itself: letting it
+// grow is what pushed Punto nostro and Annulla off the screen as the match went on. A sticky bar
+// would not help here — a grid item cannot travel outside its own track.
 @media (max-width: 1279px) {
   .layout {
     grid-template-areas:
       'scoreboard scoreboard'
       'court pad'
-      'events events'
-      'actionbar actionbar';
+      'actionbar actionbar'
+      'events events';
     grid-template-columns: minmax(240px, 4fr) minmax(400px, 8fr);
-    grid-template-rows: auto minmax(0, 1fr) minmax(160px, auto) auto;
+    grid-template-rows: auto auto auto auto;
+    gap: t.$sp-2;
     height: auto;
+    padding: t.$sp-2;
+  }
+
+  .eventsArea {
+    height: 38vh;
+    min-height: 200px;
+  }
+
+  .padArea {
+    overflow-y: visible;
+  }
+}
+
+// Phones: two columns no longer fit, and a horizontal scrollbar on this screen is unusable.
+@media (max-width: 767px) {
+  .layout {
+    grid-template-areas:
+      'scoreboard'
+      'court'
+      'pad'
+      'actionbar'
+      'events';
+    grid-template-columns: minmax(0, 1fr);
+    gap: t.$sp-2;
+    padding: t.$sp-2;
+  }
+
+  .eventsArea {
+    height: 40vh;
+  }
+
+  .courtActions {
+    margin-top: t.$sp-2;
   }
 }

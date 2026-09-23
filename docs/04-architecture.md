@@ -98,3 +98,14 @@ Findings from the final review that were considered and deliberately not changed
    (which needs the fold's warnings). The fold is pure and a full match is a few hundred events, so
    the second pass is sub-millisecond. Threading the `FoldResult` through would couple the two
    functions for no measurable gain.
+3. **Below 1280px the action bar is placed above the event log by grid areas, not by DOM order.**
+   The DOM keeps the log before the bar, which is the reading order the desktop layout shows, so on
+   a tablet the visual order and the focus order differ for those two panels. Reordering the JSX
+   would move the mismatch onto the desktop layout, where the keyboard is actually used and the
+   documented shortcuts live. Tablets are the touch fallback, so the mismatch was left where it
+   costs least. Revisit if the tablet build ever gains keyboard support.
+4. **The tablet layout still scrolls by a fixed amount** on a 820px-tall viewport: the scoreboard,
+   court and pad together leave the action bar at the fold. What was fixed is the growth — the log
+   is capped at 38vh and scrolls inside itself, so the distance to the bar no longer increases with
+   every recorded action. Closing the remaining gap means shrinking the scoreboard or the pad, which
+   belongs with the touch-target work, not here.
