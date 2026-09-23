@@ -197,6 +197,8 @@ export const LIVE = {
   setsWon: (n: number) => `Set vinti: ${n}`,
   serving: 'Al servizio',
   court: (rotation: number) => `Campo — rotazione ${rotation}`,
+  liberos: 'Libero',
+  liberoTag: 'L',
   action: 'Azione',
   step1: '1 · Giocatore',
   step2: '2 · Fondamentale',

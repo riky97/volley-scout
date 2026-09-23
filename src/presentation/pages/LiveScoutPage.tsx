@@ -7,6 +7,7 @@ import { useSettingsStore } from '@application/stores/settingsStore';
 import { ActionPad } from '@presentation/components/live/ActionPad';
 import { CourtGrid } from '@presentation/components/live/CourtGrid';
 import { EventLog } from '@presentation/components/live/EventLog';
+import { LiberoRow } from '@presentation/components/live/LiberoRow';
 import { LiveStatsPanel } from '@presentation/components/live/LiveStatsPanel';
 import { SubstitutionDialog } from '@presentation/components/live/SubstitutionDialog';
 import { Scoreboard } from '@presentation/components/live/Scoreboard';
@@ -260,6 +261,10 @@ export function LiveScoutPage(): React.JSX.Element {
   }
 
   const onCourtIds = snapshot.court.map((entry) => entry.playerId);
+  // A libero put in the starting lineup is already on the court; list only the others.
+  const liberos = match.roster.filter(
+    (player) => player.isLibero && player.isAvailable && !onCourtIds.includes(player.id),
+  );
   const lastEventLabel =
     snapshot.lastEvent === null
       ? LIVE.nothingToUndo
@@ -277,6 +282,13 @@ export function LiveScoutPage(): React.JSX.Element {
           roster={match.roster}
           rotationOffset={liveSet.rotationOffset}
           serverId={snapshot.currentServerId}
+          selectedPlayerId={selectedPlayerId}
+          onSelectPlayer={(playerId) => {
+            setSelectedPlayerId(playerId);
+          }}
+        />
+        <LiberoRow
+          liberos={liberos}
           selectedPlayerId={selectedPlayerId}
           onSelectPlayer={(playerId) => {
             setSelectedPlayerId(playerId);

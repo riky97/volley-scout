@@ -1,0 +1,49 @@
+@use '../../styles/tokens' as t;
+
+// Same three columns as the court, so a libero sits under a court slot.
+.row {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: t.$sp-2;
+}
+
+.libero {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: t.$sp-2;
+  min-width: 0;
+  min-height: t.$hit-min;
+  padding: t.$sp-1 t.$sp-2;
+  border: 1px dashed var(--border-strong);
+  border-radius: t.$radius-md;
+  background: var(--surface);
+  color: var(--text);
+}
+
+.selected {
+  border: 3px solid var(--accent);
+  background: var(--surface-selected);
+  font-weight: 700;
+}
+
+.tag {
+  font-size: var(--fs-small);
+  font-weight: 700;
+  color: var(--text-muted);
+}
+
+.shirt {
+  font-size: var(--fs-shirt);
+  font-variant-numeric: tabular-nums;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.name {
+  min-width: 0;
+  overflow: hidden;
+  font-size: var(--fs-small);
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}

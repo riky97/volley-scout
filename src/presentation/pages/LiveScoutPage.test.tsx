@@ -9,19 +9,21 @@ import { LiveScoutPage } from './LiveScoutPage';
 
 const TIMESTAMP = '2026-09-22T19:00:00.000+02:00';
 
-function makePlayers(): readonly Player[] {
+/** Player 7 stays off the starting lineup; `withLibero` flags them as the libero. */
+function makePlayers(withLibero: boolean): readonly Player[] {
   return Array.from({ length: 7 }, (_, index) =>
     createPlayer({
       id: `player-${String(index + 1)}`,
       shirtNumber: index + 1,
       name: `Giocatore ${String(index + 1)}`,
       shortName: `Atleta${String(index + 1)}`,
+      isLibero: withLibero && index === 6,
     }),
   );
 }
 
-function makeLiveMatch(): Match {
-  const roster = makePlayers();
+function makeLiveMatch(withLibero = false): Match {
+  const roster = makePlayers(withLibero);
   const match = createMatch({
     id: 'match-1',
     ourTeamId: 'team-us',
@@ -135,6 +137,25 @@ describe('LiveScoutPage', () => {
     await user.click(within(dialog).getByRole('button', { name: 'Sì, termina' }));
 
     expect(useMatchStore.getState().match?.status).toBe('abandoned');
+  });
+
+  it('lists the libero under the court and records their action', async () => {
+    useMatchStore.getState().setMatch(makeLiveMatch(true));
+    const user = userEvent.setup();
+    renderPage();
+
+    const liberoRow = screen.getByRole('group', { name: 'Libero' });
+    await user.click(within(liberoRow).getByRole('button', { name: /7\s*Atleta7/u }));
+    await user.click(screen.getByRole('button', { name: 'Ricezione' }));
+    const outcomes = screen.getByRole('group', { name: '3 · Esito' });
+    await user.click(within(outcomes).getByRole('button', { name: /Errore/u }));
+
+    expect(screen.getByLabelText('Loro: 1')).toBeInTheDocument();
+  });
+
+  it('shows no libero row when the roster has no libero', () => {
+    renderPage();
+    expect(screen.queryByRole('group', { name: 'Libero' })).not.toBeInTheDocument();
   });
 
   it('leaves the match running when the operator cancels', async () => {
