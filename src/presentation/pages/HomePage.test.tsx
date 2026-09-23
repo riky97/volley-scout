@@ -13,6 +13,7 @@ const matchStoreState = vi.hoisted(() => ({
 
 const archiveStoreState = vi.hoisted(() => ({
   matches: [] as unknown[],
+  templates: [] as unknown[],
   isLoading: false,
   refresh: vi.fn().mockResolvedValue(undefined),
 }));

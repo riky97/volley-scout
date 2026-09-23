@@ -27,6 +27,16 @@ Sul tablet non hai la tastiera, quindi le scorciatoie non ci sono: si registra t
 
 ## 2. Prima di una partita
 
+### Preparare la rosa una volta sola
+
+Dalla Home, il riquadro **Gestione rose** accanto a «Nuova partita» ti permette di inserire i
+giocatori quando vuoi, senza dover creare una partita. Dai un nome alla rosa (per esempio
+«Prima squadra 2026»), aggiungi i giocatori e salva.
+
+Quando poi crei una partita, al passo **Rosa** scegli quella rosa dal menu **Modello roster** e
+premi **Carica modello**: i giocatori vengono inseriti tutti insieme. Le modifiche fatte durante
+una partita restano in quella partita e non toccano la rosa salvata.
+
 ### Creare la partita
 
 1. Dalla Home scegli **Nuova partita**.

@@ -35,6 +35,11 @@ export const HOME = {
     body: 'Configura squadre, rosa e sestetto.',
     button: 'Nuova partita',
   },
+  rosterCard: {
+    title: 'Gestione rose',
+    body: (n: number) => (n === 1 ? '1 rosa salvata' : `${String(n)} rose salvate`),
+    button: 'Gestisci rose',
+  },
   archiveCard: {
     title: 'Archivio partite',
     body: (n: number) => `${n} partite salvate`,
@@ -125,6 +130,38 @@ export const ROSTER = {
   error: {
     duplicateShirtNumber: 'Numero di maglia già assegnato.',
     templateSaveFailed: 'Impossibile salvare il modello.',
+  },
+} as const;
+
+export const ROSTER_MANAGER = {
+  title: 'Gestione rose',
+  subtitle: 'Prepara la rosa una volta sola e richiamala quando crei una partita.',
+  newRoster: 'Nuova rosa',
+  rosterName: 'Nome della rosa',
+  rosterNamePlaceholder: 'Es. Prima squadra 2026',
+  teamName: 'Nome della squadra',
+  playersCount: (n: number) => (n === 1 ? '1 giocatore' : `${String(n)} giocatori`),
+  updatedAt: (date: string) => `Aggiornata il ${date}`,
+  edit: 'Modifica',
+  save: 'Salva rosa',
+  saved: 'Rosa salvata.',
+  deleted: 'Rosa eliminata.',
+  editTitle: 'Modifica rosa',
+  createTitle: 'Nuova rosa',
+  emptyState: {
+    title: 'Nessuna rosa salvata',
+    body: 'Crea una rosa per riusarla in ogni partita senza reinserire i giocatori.',
+    button: 'Nuova rosa',
+  },
+  error: {
+    nameRequired: 'Dai un nome alla rosa.',
+    noPlayers: 'Aggiungi almeno un giocatore.',
+    duplicateShirtNumber: 'Ci sono numeri di maglia ripetuti.',
+  },
+  confirmDelete: {
+    title: 'Eliminare la rosa?',
+    body: (name: string) => `"${name}" verrà eliminata definitivamente. Le partite già registrate non cambiano.`,
+    confirm: 'Elimina',
   },
 } as const;
 

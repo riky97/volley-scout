@@ -38,6 +38,7 @@ export function HomePage(): React.JSX.Element {
   const snapshot = useMatchStore((state) => state.snapshot);
   const resumeLastMatch = useMatchStore((state) => state.resumeLastMatch);
   const archiveMatches = useArchiveStore((state) => state.matches);
+  const rosterTemplates = useArchiveStore((state) => state.templates);
   const isArchiveLoading = useArchiveStore((state) => state.isLoading);
   const refreshArchive = useArchiveStore((state) => state.refresh);
 
@@ -130,13 +131,28 @@ export function HomePage(): React.JSX.Element {
         />
       )}
 
-      <div className="grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-3">
+      <div className="grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-2 lg:grid-cols-4">
         <Card title={HOME.newMatchCard.title}>
           <p className="mb-[var(--sp-4)] text-[var(--fs-body)] text-[var(--text-muted)]">
             {HOME.newMatchCard.body}
           </p>
           <Button variant="primary" fullWidth onClick={goToNewMatch}>
             {HOME.newMatchCard.button}
+          </Button>
+        </Card>
+
+        <Card title={HOME.rosterCard.title}>
+          <p className="mb-[var(--sp-4)] text-[var(--fs-body)] text-[var(--text-muted)]">
+            {HOME.rosterCard.body(rosterTemplates.length)}
+          </p>
+          <Button
+            variant="secondary"
+            fullWidth
+            onClick={() => {
+              void navigate(ROUTES.rosterManager);
+            }}
+          >
+            {HOME.rosterCard.button}
           </Button>
         </Card>
 

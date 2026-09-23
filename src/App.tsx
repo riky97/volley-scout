@@ -6,6 +6,7 @@ import { Toaster } from '@presentation/components/ui/Toast';
 import { ROUTES } from '@presentation/routes';
 import { HomePage } from '@presentation/pages/HomePage';
 import { NewMatchPage } from '@presentation/pages/NewMatchPage';
+import { RosterManagerPage } from '@presentation/pages/RosterManagerPage';
 import { RosterPage } from '@presentation/pages/RosterPage';
 import { LineupPage } from '@presentation/pages/LineupPage';
 import { LiveScoutPage } from '@presentation/pages/LiveScoutPage';
@@ -41,6 +42,7 @@ export function App(): React.JSX.Element {
             <Route path={ROUTES.home} element={<HomePage />} />
             <Route path={ROUTES.newMatch} element={<NewMatchPage />} />
             <Route path={ROUTES.roster} element={<RosterPage />} />
+            <Route path={ROUTES.rosterManager} element={<RosterManagerPage />} />
             <Route path={ROUTES.lineup} element={<LineupPage />} />
             <Route path={ROUTES.live} element={<LiveScoutPage />} />
             <Route path={ROUTES.stats} element={<LiveStatsPage />} />

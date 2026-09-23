@@ -3,6 +3,7 @@ export const ROUTES = {
   home: '/',
   newMatch: '/partita/nuova',
   roster: '/partita/rosa',
+  rosterManager: '/rose',
   lineup: '/partita/sestetto',
   live: '/partita/live',
   stats: '/partita/statistiche',
