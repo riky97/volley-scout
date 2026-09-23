@@ -9,7 +9,7 @@ Internal use by one team. No cloud, no accounts, no telemetry, no network calls 
   technical docs, commit messages.
 - **All user-visible text is Italian**: labels, buttons, menus, dialogs, toasts, error messages,
   tooltips, PDF/Excel exports, help text.
-- Italian copy lives in `src/shared/labels/` — never hardcode Italian strings inside components
+- Italian copy lives in `src/shared/copy/` — never hardcode Italian strings inside components
   unless they are one-off and clearly local to that component.
 
 ## Branches
@@ -81,7 +81,7 @@ Import aliases: `@domain/*`, `@application/*`, `@infrastructure/*`, `@presentati
 - `docs/03-ux-flows.md` — screens, wireframes, tokens, Italian copy
 - `docs/04-architecture.md` — layering and ADRs
 - `docs/05-persistence.md` — storage, autosave, recovery
-- `docs/06-export.md` — XLSX/PDF/JSON formats
+- Export formats (XLSX/PDF/JSON): `docs/00-product-plan.md` §9 and `src/infrastructure/export/`
 - `docs/07-qa-scenarios.md` — manual test scenarios
 - `docs/08-guida-utente.md` — Italian end-user guide
 - `PLAN.md` — live task board

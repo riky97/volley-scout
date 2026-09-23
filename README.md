@@ -106,7 +106,7 @@ and write the same format, so a match exported from one opens in the other.
 - `docs/03-ux-flows.md` — screens, wireframes, design tokens, Italian copy
 - `docs/04-architecture.md` — layering, store APIs, key decisions
 - `docs/05-persistence.md` — autosave, recovery, OS limits
-- `docs/06-export.md` — export formats
+- Export formats: `docs/00-product-plan.md` §9 and `src/infrastructure/export/`
 - `docs/07-qa-scenarios.md` — manual test scenarios
 - `docs/08-guida-utente.md` — end-user guide (Italian)
 - `CLAUDE.md` — conventions for anyone (or anything) writing code here
