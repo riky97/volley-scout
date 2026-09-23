@@ -1,9 +1,15 @@
+import { useId } from 'react';
 import type { AppSettings, BestOf, ThemeMode } from '@domain/index';
 import { useSettingsStore } from '@application/stores/settingsStore';
 import { showToast } from '@presentation/components/ui/Toast';
-import { SETTINGS, TOASTS } from '@shared/copy';
+import { NEW_MATCH, SETTINGS, TOASTS } from '@shared/copy';
 // Named import: the bundler keeps only this field, not the dependency list.
 import { version as APP_VERSION } from '../../../package.json';
+import { Input } from '@presentation/components/ui/Input';
+import { Checkbox } from '@presentation/components/ui/Checkbox';
+import { Label } from '@presentation/components/ui/Label';
+import { Radio } from '@presentation/components/ui/Radio';
+import { RadioGroup } from '@presentation/components/ui/RadioGroup';
 
 /**
  * Short reference for the live-screen shortcuts, taken verbatim from
@@ -38,6 +44,7 @@ async function saveSetting(
 }
 
 export function SettingsPage(): React.JSX.Element {
+  const teamNameId = useId();
   const settings = useSettingsStore((state) => state.settings);
   const dataLocation = useSettingsStore((state) => state.dataLocation);
   const update = useSettingsStore((state) => state.update);
@@ -50,76 +57,63 @@ export function SettingsPage(): React.JSX.Element {
 
       <section className="flex flex-col gap-[var(--sp-3)]">
         <h2 className="text-[var(--fs-h3)] font-semibold text-[var(--text)]">{SETTINGS.appearance}</h2>
-        <fieldset className="flex flex-col gap-[var(--sp-2)]">
-          <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-            {SETTINGS.theme}
-          </legend>
-          <div className="flex gap-[var(--sp-5)]">
-            {(
-              [
-                ['light', SETTINGS.themeLight],
-                ['dark', SETTINGS.themeDark],
-                ['system', SETTINGS.themeSystem],
-              ] as ReadonlyArray<[ThemeMode, string]>
-            ).map(([value, label]) => (
-              <label key={value} className="flex items-center gap-[var(--sp-2)]">
-                <input
-                  type="radio"
-                  name="theme"
-                  checked={settings.theme === value}
-                  onChange={() => {
-                    void saveSetting(update, { theme: value });
-                  }}
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <RadioGroup legend={SETTINGS.theme}>
+          {(
+            [
+              ['light', SETTINGS.themeLight],
+              ['dark', SETTINGS.themeDark],
+              ['system', SETTINGS.themeSystem],
+            ] as ReadonlyArray<[ThemeMode, string]>
+          ).map(([value, label]) => (
+            <Radio
+              key={value}
+              name="theme"
+              checked={settings.theme === value}
+              onChange={() => {
+                void saveSetting(update, { theme: value });
+              }}
+            >
+              {label}
+            </Radio>
+          ))}
+        </RadioGroup>
       </section>
 
       <section className="flex flex-col gap-[var(--sp-3)]">
         <h2 className="text-[var(--fs-h3)] font-semibold text-[var(--text)]">{SETTINGS.defaults}</h2>
 
-        <label className="flex flex-col gap-[var(--sp-1)]">
-          <span className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-            {SETTINGS.ourTeamName}
-          </span>
-          <input
-            type="text"
+        <div className="flex flex-col gap-[var(--sp-1)]">
+          <Label htmlFor={teamNameId}>{SETTINGS.ourTeamName}</Label>
+          <Input
+            id={teamNameId}
             defaultValue={settings.defaultTeamName}
             onBlur={(event) => {
               void saveSetting(update, { defaultTeamName: event.target.value });
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-3)] text-[var(--fs-body)] text-[var(--text)]"
           />
-        </label>
+        </div>
 
-        <fieldset className="flex flex-col gap-[var(--sp-2)]">
-          <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">Formato set</legend>
-          <div className="flex gap-[var(--sp-5)]">
-            {(
-              [
-                [5, 'Al meglio dei 5'],
-                [3, 'Al meglio dei 3'],
-              ] as ReadonlyArray<[BestOf, string]>
-            ).map(([value, label]) => (
-              <label key={value} className="flex items-center gap-[var(--sp-2)]">
-                <input
-                  type="radio"
-                  name="bestOf"
-                  checked={settings.defaultMatchSettings.bestOf === value}
-                  onChange={() => {
-                    void saveSetting(update, {
-                      defaultMatchSettings: { ...settings.defaultMatchSettings, bestOf: value },
-                    });
-                  }}
-                />
-                {label}
-              </label>
-            ))}
-          </div>
-        </fieldset>
+        <RadioGroup legend={SETTINGS.matchFormat}>
+          {(
+            [
+              [5, NEW_MATCH.bestOf5],
+              [3, NEW_MATCH.bestOf3],
+            ] as ReadonlyArray<[BestOf, string]>
+          ).map(([value, label]) => (
+            <Radio
+              key={value}
+              name="bestOf"
+              checked={settings.defaultMatchSettings.bestOf === value}
+              onChange={() => {
+                void saveSetting(update, {
+                  defaultMatchSettings: { ...settings.defaultMatchSettings, bestOf: value },
+                });
+              }}
+            >
+              {label}
+            </Radio>
+          ))}
+        </RadioGroup>
       </section>
 
       <section className="flex flex-col gap-[var(--sp-3)]">
@@ -127,49 +121,41 @@ export function SettingsPage(): React.JSX.Element {
           {SETTINGS.dataCollection}
         </h2>
 
-        <label className="flex items-center gap-[var(--sp-2)]">
-          <input
-            type="checkbox"
-            checked={settings.confirmDestructiveActions}
-            onChange={(event) => {
-              void saveSetting(update, { confirmDestructiveActions: event.target.checked });
-            }}
-          />
+        <Checkbox
+          checked={settings.confirmDestructiveActions}
+          onChange={(event) => {
+            void saveSetting(update, { confirmDestructiveActions: event.target.checked });
+          }}
+        >
           {SETTINGS.confirmEndMatch}
-        </label>
+        </Checkbox>
 
-        <label className="flex items-center gap-[var(--sp-2)]">
-          <input
-            type="checkbox"
-            checked={settings.autoConfirmActions}
-            onChange={(event) => {
-              void saveSetting(update, { autoConfirmActions: event.target.checked });
-            }}
-          />
+        <Checkbox
+          checked={settings.autoConfirmActions}
+          onChange={(event) => {
+            void saveSetting(update, { autoConfirmActions: event.target.checked });
+          }}
+        >
           {SETTINGS.confirmUndo}
-        </label>
+        </Checkbox>
 
-        <label className="flex items-center gap-[var(--sp-2)]">
-          <input
-            type="checkbox"
-            checked={settings.keyboardShortcutsEnabled}
-            onChange={(event) => {
-              void saveSetting(update, { keyboardShortcutsEnabled: event.target.checked });
-            }}
-          />
+        <Checkbox
+          checked={settings.keyboardShortcutsEnabled}
+          onChange={(event) => {
+            void saveSetting(update, { keyboardShortcutsEnabled: event.target.checked });
+          }}
+        >
           {SETTINGS.shortcutsEnabled}
-        </label>
+        </Checkbox>
 
-        <label className="flex items-center gap-[var(--sp-2)]">
-          <input
-            type="checkbox"
-            checked={settings.showSoftLimitWarnings}
-            onChange={(event) => {
-              void saveSetting(update, { showSoftLimitWarnings: event.target.checked });
-            }}
-          />
-          Avvisi sui limiti di time-out e cambi
-        </label>
+        <Checkbox
+          checked={settings.showSoftLimitWarnings}
+          onChange={(event) => {
+            void saveSetting(update, { showSoftLimitWarnings: event.target.checked });
+          }}
+        >
+          {SETTINGS.softLimitWarnings}
+        </Checkbox>
       </section>
 
       <section className="flex flex-col gap-[var(--sp-3)]">

@@ -11,7 +11,12 @@ import { newId, nowIso, todayIsoDate } from '@application/clock';
 import { Button } from '@presentation/components/ui/Button';
 import { Card } from '@presentation/components/ui/Card';
 import { Dialog } from '@presentation/components/ui/Dialog';
-import { describedBy, FormField, TEXT_INPUT_CLASSES } from '@presentation/components/setup/FormField';
+import { Checkbox } from '@presentation/components/ui/Checkbox';
+import { describedBy, FormField } from '@presentation/components/ui/FormField';
+import { Input } from '@presentation/components/ui/Input';
+import { Radio } from '@presentation/components/ui/Radio';
+import { RadioGroup } from '@presentation/components/ui/RadioGroup';
+import { Textarea } from '@presentation/components/ui/Textarea';
 import { ROUTES } from '@presentation/routes';
 import { COMMON_BUTTONS, DIALOGS, NEW_MATCH, SETTINGS, STEPS, VALIDATION } from '@shared/copy';
 
@@ -174,9 +179,8 @@ export function NewMatchPage(): React.JSX.Element {
               required
               error={errors.homeTeamName?.message}
             >
-              <input
+              <Input
                 id="homeTeamName"
-                className={TEXT_INPUT_CLASSES}
                 aria-describedby={describedBy('homeTeamName', { error: errors.homeTeamName?.message })}
                 aria-invalid={errors.homeTeamName !== undefined}
                 {...register('homeTeamName')}
@@ -189,9 +193,8 @@ export function NewMatchPage(): React.JSX.Element {
               required
               error={errors.awayTeamName?.message}
             >
-              <input
+              <Input
                 id="awayTeamName"
-                className={TEXT_INPUT_CLASSES}
                 aria-describedby={describedBy('awayTeamName', { error: errors.awayTeamName?.message })}
                 aria-invalid={errors.awayTeamName !== undefined}
                 {...register('awayTeamName')}
@@ -199,10 +202,9 @@ export function NewMatchPage(): React.JSX.Element {
             </FormField>
 
             <FormField id="date" label={NEW_MATCH.date} required error={errors.date?.message}>
-              <input
+              <Input
                 id="date"
                 type="date"
-                className={TEXT_INPUT_CLASSES}
                 aria-describedby={describedBy('date', { error: errors.date?.message })}
                 aria-invalid={errors.date !== undefined}
                 {...register('date')}
@@ -210,49 +212,37 @@ export function NewMatchPage(): React.JSX.Element {
             </FormField>
 
             <FormField id="competition" label={NEW_MATCH.competition}>
-              <input id="competition" className={TEXT_INPUT_CLASSES} {...register('competition')} />
+              <Input id="competition" {...register('competition')} />
             </FormField>
 
             <FormField id="venue" label={NEW_MATCH.venue}>
-              <input id="venue" className={TEXT_INPUT_CLASSES} {...register('venue')} />
+              <Input id="venue" {...register('venue')} />
             </FormField>
           </div>
 
-          <fieldset className="mt-[var(--sp-4)] flex flex-col gap-[var(--sp-2)]">
-            <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-              {NEW_MATCH.ourSide}
-            </legend>
-            <div className="flex gap-[var(--sp-5)]">
-              <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value="home" {...register('ourSide')} />
-                {NEW_MATCH.sideHome}
-              </label>
-              <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value="away" {...register('ourSide')} />
-                {NEW_MATCH.sideAway}
-              </label>
-            </div>
-          </fieldset>
+          <RadioGroup className="mt-[var(--sp-4)]" legend={NEW_MATCH.ourSide}>
+            <Radio value="home" {...register('ourSide')}>
+              {NEW_MATCH.sideHome}
+            </Radio>
+            <Radio value="away" {...register('ourSide')}>
+              {NEW_MATCH.sideAway}
+            </Radio>
+          </RadioGroup>
 
           <FormField id="notes" label={NEW_MATCH.notes} className="mt-[var(--sp-4)]">
-            <textarea id="notes" rows={2} className={TEXT_INPUT_CLASSES} {...register('notes')} />
+            <Textarea id="notes" rows={2} {...register('notes')} />
           </FormField>
         </Card>
 
         <Card title={NEW_MATCH.format}>
-          <fieldset className="flex flex-col gap-[var(--sp-2)]">
-            <legend className="sr-only">{NEW_MATCH.format}</legend>
-            <div className="flex gap-[var(--sp-5)]">
-              <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value="5" {...register('bestOf')} />
-                {NEW_MATCH.bestOf5}
-              </label>
-              <label className="flex items-center gap-[var(--sp-2)]">
-                <input type="radio" value="3" {...register('bestOf')} />
-                {NEW_MATCH.bestOf3}
-              </label>
-            </div>
-          </fieldset>
+          <RadioGroup legend={NEW_MATCH.format} hideLegend>
+            <Radio value="5" {...register('bestOf')}>
+              {NEW_MATCH.bestOf5}
+            </Radio>
+            <Radio value="3" {...register('bestOf')}>
+              {NEW_MATCH.bestOf3}
+            </Radio>
+          </RadioGroup>
 
           <div className="mt-[var(--sp-4)] grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-2">
             <FormField
@@ -260,12 +250,11 @@ export function NewMatchPage(): React.JSX.Element {
               label={NEW_MATCH.pointsPerSet}
               error={errors.pointsToWinSet?.message}
             >
-              <input
+              <Input
                 id="pointsToWinSet"
                 type="number"
                 min={15}
                 max={30}
-                className={TEXT_INPUT_CLASSES}
                 aria-describedby={describedBy('pointsToWinSet', {
                   error: errors.pointsToWinSet?.message,
                 })}
@@ -279,12 +268,11 @@ export function NewMatchPage(): React.JSX.Element {
               label={NEW_MATCH.tieBreakPoints}
               error={errors.pointsToWinTieBreak?.message}
             >
-              <input
+              <Input
                 id="pointsToWinTieBreak"
                 type="number"
                 min={15}
                 max={30}
-                className={TEXT_INPUT_CLASSES}
                 aria-describedby={describedBy('pointsToWinTieBreak', {
                   error: errors.pointsToWinTieBreak?.message,
                 })}
@@ -294,51 +282,31 @@ export function NewMatchPage(): React.JSX.Element {
             </FormField>
           </div>
 
-          <div className="mt-[var(--sp-4)] flex flex-col gap-[var(--sp-2)]">
-            <label className="flex items-center gap-[var(--sp-2)]">
-              <input type="checkbox" {...register('winByTwo')} />
-              {NEW_MATCH.winByTwo}
-            </label>
-            <label className="flex items-center gap-[var(--sp-2)]">
-              <input type="checkbox" {...register('trackSetSkill')} />
-              {SETTINGS.trackSets}
-            </label>
+          <div className="mt-[var(--sp-4)] flex flex-col">
+            <Checkbox {...register('winByTwo')}>{NEW_MATCH.winByTwo}</Checkbox>
+            <Checkbox {...register('trackSetSkill')}>{SETTINGS.trackSets}</Checkbox>
           </div>
         </Card>
 
         <Card title={NEW_MATCH.startTitle}>
           <div className="grid grid-cols-1 gap-[var(--sp-4)] sm:grid-cols-2">
-            <fieldset className="flex flex-col gap-[var(--sp-2)]">
-              <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-                {NEW_MATCH.firstServe}
-              </legend>
-              <div className="flex gap-[var(--sp-5)]">
-                <label className="flex items-center gap-[var(--sp-2)]">
-                  <input type="radio" value="us" {...register('startingServer')} />
-                  {NEW_MATCH.serveUs}
-                </label>
-                <label className="flex items-center gap-[var(--sp-2)]">
-                  <input type="radio" value="them" {...register('startingServer')} />
-                  {NEW_MATCH.serveThem}
-                </label>
-              </div>
-            </fieldset>
+            <RadioGroup legend={NEW_MATCH.firstServe}>
+              <Radio value="us" {...register('startingServer')}>
+                {NEW_MATCH.serveUs}
+              </Radio>
+              <Radio value="them" {...register('startingServer')}>
+                {NEW_MATCH.serveThem}
+              </Radio>
+            </RadioGroup>
 
-            <fieldset className="flex flex-col gap-[var(--sp-2)]">
-              <legend className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-                {NEW_MATCH.ourCourt}
-              </legend>
-              <div className="flex gap-[var(--sp-5)]">
-                <label className="flex items-center gap-[var(--sp-2)]">
-                  <input type="radio" value="left" {...register('startingSide')} />
-                  {NEW_MATCH.left}
-                </label>
-                <label className="flex items-center gap-[var(--sp-2)]">
-                  <input type="radio" value="right" {...register('startingSide')} />
-                  {NEW_MATCH.right}
-                </label>
-              </div>
-            </fieldset>
+            <RadioGroup legend={NEW_MATCH.ourCourt}>
+              <Radio value="left" {...register('startingSide')}>
+                {NEW_MATCH.left}
+              </Radio>
+              <Radio value="right" {...register('startingSide')}>
+                {NEW_MATCH.right}
+              </Radio>
+            </RadioGroup>
           </div>
         </Card>
 

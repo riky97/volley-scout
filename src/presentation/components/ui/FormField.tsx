@@ -1,5 +1,6 @@
 import type { ReactNode } from 'react';
-import clsx from 'clsx';
+import { cn } from '@presentation/lib/cn';
+import { Label } from './Label';
 
 export interface FormFieldProps {
   readonly id: string;
@@ -28,16 +29,10 @@ export function FormField({
   const errorId = `${id}-error`;
 
   return (
-    <div className={clsx('flex flex-col gap-[var(--sp-1)]', className)}>
-      <label htmlFor={id} className="text-[var(--fs-small)] font-medium text-[var(--text)]">
+    <div className={cn('flex flex-col gap-[var(--sp-1)]', className)}>
+      <Label htmlFor={id} required={required}>
         {label}
-        {required && (
-          <span aria-hidden="true" className="text-[var(--outcome-error)]">
-            {' '}
-            *
-          </span>
-        )}
-      </label>
+      </Label>
       {children}
       {hint !== undefined && (
         <p id={hintId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
@@ -63,11 +58,3 @@ export function describedBy(
   if (state.error !== undefined) ids.push(`${id}-error`);
   return ids.length > 0 ? ids.join(' ') : undefined;
 }
-
-/** Shared Tailwind classes for a text/number/date input matching the design tokens. */
-export const TEXT_INPUT_CLASSES = clsx(
-  'min-h-[var(--hit-min)] w-full rounded-[var(--radius-md)] border border-[var(--border-strong)]',
-  'bg-[var(--surface)] px-[var(--sp-3)] text-[var(--fs-body)] text-[var(--text)]',
-  'focus-visible:outline focus-visible:outline-[3px] focus-visible:outline-offset-2',
-  'focus-visible:outline-[var(--focus-ring)]',
-);

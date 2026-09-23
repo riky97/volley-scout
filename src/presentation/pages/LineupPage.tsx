@@ -18,6 +18,8 @@ import { StepIndicator } from '@presentation/components/roster/StepIndicator';
 import { CourtLayout } from '@presentation/components/roster/CourtLayout';
 import { PlayerChip } from '@presentation/components/roster/PlayerChip';
 import { ROUTES } from '@presentation/routes';
+import { Radio } from '@presentation/components/ui/Radio';
+import { RadioGroup } from '@presentation/components/ui/RadioGroup';
 
 type SlotMap = Record<CourtPosition, Id | null>;
 
@@ -72,7 +74,6 @@ export function LineupPage(): React.JSX.Element {
     firstServerOfSet(match?.settings ?? DEFAULT_MATCH_SETTINGS, setIndex),
   );
 
-  const legendId = useId();
   const errorId = useId();
 
   if (match === null) {
@@ -158,38 +159,34 @@ export function LineupPage(): React.JSX.Element {
             onSelectPosition={selectPosition}
           />
 
-          <fieldset className="flex flex-col gap-[var(--sp-2)]">
-            <legend id={legendId} className="text-[var(--fs-body)] font-semibold text-[var(--text)]">
-              {NEW_MATCH.firstServe}
-            </legend>
-            <div className="flex gap-[var(--sp-4)]" role="radiogroup" aria-labelledby={legendId}>
-              <label className="flex min-h-[var(--hit-min)] items-center gap-[var(--sp-2)]">
-                <input
-                  type="radio"
-                  name="serving-team"
-                  checked={servingTeam === 'us'}
-                  onChange={() => {
-                    setServingTeam('us');
-                  }}
-                />
-                {NEW_MATCH.serveUs}
-              </label>
-              <label className="flex min-h-[var(--hit-min)] items-center gap-[var(--sp-2)]">
-                <input
-                  type="radio"
-                  name="serving-team"
-                  checked={servingTeam === 'them'}
-                  onChange={() => {
-                    setServingTeam('them');
-                  }}
-                />
-                {NEW_MATCH.serveThem}
-              </label>
-            </div>
-            <p className="text-[var(--fs-small)] text-[var(--text-muted)]">
-              {LINEUP.firstServe(servingTeam === 'us' ? 'Nostro' : 'Avversario')}
-            </p>
-          </fieldset>
+          <RadioGroup
+            legend={NEW_MATCH.firstServe}
+            legendClassName="text-[length:var(--fs-body)] font-semibold"
+            footer={
+              <p className="text-[var(--fs-small)] text-[var(--text-muted)]">
+                {LINEUP.firstServe(servingTeam === 'us' ? 'Nostro' : 'Avversario')}
+              </p>
+            }
+          >
+            <Radio
+              name="serving-team"
+              checked={servingTeam === 'us'}
+              onChange={() => {
+                setServingTeam('us');
+              }}
+            >
+              {NEW_MATCH.serveUs}
+            </Radio>
+            <Radio
+              name="serving-team"
+              checked={servingTeam === 'them'}
+              onChange={() => {
+                setServingTeam('them');
+              }}
+            >
+              {NEW_MATCH.serveThem}
+            </Radio>
+          </RadioGroup>
 
           {!isComplete && (
             <p id={errorId} role="alert" className="text-[var(--fs-small)] text-[var(--outcome-error)]">

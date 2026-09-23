@@ -15,6 +15,8 @@ import { RosterTable } from '@presentation/components/roster/RosterTable';
 import { PlayerFormRow } from '@presentation/components/roster/PlayerFormRow';
 import type { PlayerFormValues } from '@presentation/components/roster/PlayerFormRow';
 import { ROUTES } from '@presentation/routes';
+import { Label } from '@presentation/components/ui/Label';
+import { Input } from '@presentation/components/ui/Input';
 
 /** The roster being edited: an existing template when `id` is set, a new one when it is null. */
 interface RosterDraft {
@@ -161,30 +163,28 @@ export function RosterManagerPage(): React.JSX.Element {
         <Card>
           <div className="flex flex-wrap gap-[var(--sp-4)]">
             <div className="flex min-w-[240px] flex-1 flex-col gap-[var(--sp-1)]">
-              <label htmlFor={nameFieldId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
+              <Label htmlFor={nameFieldId}>
                 {ROSTER_MANAGER.rosterName}
-              </label>
-              <input
+              </Label>
+              <Input
                 id={nameFieldId}
                 value={draft.name}
                 placeholder={ROSTER_MANAGER.rosterNamePlaceholder}
                 onChange={(event) => {
                   patchDraft({ name: event.target.value });
                 }}
-                className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-[var(--sp-3)] py-[var(--sp-2)] text-[var(--text)]"
               />
             </div>
             <div className="flex min-w-[240px] flex-1 flex-col gap-[var(--sp-1)]">
-              <label htmlFor={teamFieldId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
+              <Label htmlFor={teamFieldId}>
                 {ROSTER_MANAGER.teamName}
-              </label>
-              <input
+              </Label>
+              <Input
                 id={teamFieldId}
                 value={draft.teamName}
                 onChange={(event) => {
                   patchDraft({ teamName: event.target.value });
                 }}
-                className="rounded-[var(--radius-md)] border border-[var(--border)] bg-[var(--surface-2)] px-[var(--sp-3)] py-[var(--sp-2)] text-[var(--text)]"
               />
             </div>
           </div>

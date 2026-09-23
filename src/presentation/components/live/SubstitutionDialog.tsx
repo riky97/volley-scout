@@ -1,8 +1,9 @@
-import { useState } from 'react';
+import { useId, useState } from 'react';
 import type { Id, Player, SetState } from '@domain/index';
 import { Dialog } from '@presentation/components/ui/Dialog';
 import { DIALOGS, LIVE } from '@shared/copy';
-import styles from './SubstitutionDialog.module.scss';
+import { Label } from '@presentation/components/ui/Label';
+import { Select } from '@presentation/components/ui/Select';
 
 export interface SubstitutionDialogProps {
   readonly open: boolean;
@@ -19,6 +20,8 @@ export function SubstitutionDialog({
   onCancel,
   onConfirm,
 }: SubstitutionDialogProps): React.JSX.Element {
+  const outFieldId = useId();
+  const inFieldId = useId();
   const [outId, setOutId] = useState('');
   const [inId, setInId] = useState('');
 
@@ -47,10 +50,12 @@ export function SubstitutionDialog({
           }
         : {})}
     >
-      <div className={styles.fields}>
-        <label className={styles.field}>
-          <span>{LIVE.substitutionOut}</span>
-          <select
+      <div className="grid grid-cols-2 gap-[var(--sp-4)]">
+        <div className="flex flex-col gap-[var(--sp-2)]">
+          <Label htmlFor={outFieldId}>{LIVE.substitutionOut}</Label>
+          <Select
+            id={outFieldId}
+            className="w-full"
             value={outId}
             onChange={(event) => {
               setOutId(event.target.value);
@@ -62,11 +67,13 @@ export function SubstitutionDialog({
                 {label(player)}
               </option>
             ))}
-          </select>
-        </label>
-        <label className={styles.field}>
-          <span>{LIVE.substitutionIn}</span>
-          <select
+          </Select>
+        </div>
+        <div className="flex flex-col gap-[var(--sp-2)]">
+          <Label htmlFor={inFieldId}>{LIVE.substitutionIn}</Label>
+          <Select
+            id={inFieldId}
+            className="w-full"
             value={inId}
             onChange={(event) => {
               setInId(event.target.value);
@@ -78,8 +85,8 @@ export function SubstitutionDialog({
                 {label(player)}
               </option>
             ))}
-          </select>
-        </label>
+          </Select>
+        </div>
       </div>
     </Dialog>
   );

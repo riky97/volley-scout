@@ -53,6 +53,10 @@ A rejected action never throws into the UI: it sets `lastErrorCode` to a `Domain
 - Shared primitives in `@presentation/components/ui`: `Button` (`variant`, `size`, `fullWidth`,
   `ref`), `Card`, `Dialog` (Radix: focus-trapped, page behind inert, Escape cancels, backdrop
   never closes), `Toaster` + `showToast(message, tone)`, `EmptyState`, `LoadingState`.
+- Form controls, also in `ui`: `Input`, `Textarea`, `Select`, `Label`, `Checkbox`, `Radio`,
+  `RadioGroup`, `FormField` (+ `describedBy`). Every text-like control shares `FIELD_CLASSES`
+  (`fieldStyles.ts`); checkboxes and radios make their whole label row a 44px target. Pages never
+  write a raw `<input>`, `<select>` or `<textarea>`.
 - shadcn/ui primitives live in `@presentation/components/ui/primitives` (lowercase files, as the
   CLI writes them). Pages never import them directly: they go through the wrappers above.
 - `AppShell` renders the header, navigation and the save-state indicator.
@@ -87,11 +91,15 @@ commands in `src-tauri/src/storage.rs`, which validate paths and write atomicall
 7. **Tailwind is imported from a plain `.css` file**, not from SCSS: a Sass `@import` would inline
    the framework before the Tailwind plugin could process it.
 8. **shadcn/ui for behaviour, not for looks.** Components are added only where Radix brings
-   behaviour that is hard to get right by hand (dialogs today; form controls next). Each primitive
+   behaviour that is hard to get right by hand (dialogs). Each primitive
    is restyled with our tokens so the app looks the same; shadcn's colour names are mapped onto
    them once, in `@theme inline` in `tailwind.css`. The live screen (court, action pad, libero row)
    stays hand-built with SCSS: it is tuned for touch and gains nothing. Native `<select>` stays
-   native, because on iPad the system picker beats any custom menu for a finger.
+   native, because on iPad the system picker beats any custom menu for a finger. Checkbox and
+   radio stay native too, with shadcn's API shape but not its Radix primitives: native controls
+   already have keyboard and screen-reader behaviour, `register()` from react-hook-form works on
+   them directly (a Radix checkbox is a button and needs a `Controller` per field), and they keep
+   the current look.
    When adding a component with `npx shadcn add`, fix the generated `cn` import to
    `@presentation/lib/cn`: the CLI resolves the `utils` alias to a bare `cn` package and would
    install it from npm. Drop `lucide-react` icons we do not ship.
@@ -100,6 +108,8 @@ commands in `src-tauri/src/storage.rs`, which validate paths and write atomicall
    `#root`, the whole app stayed exposed behind every dialog.
 10. **Live shortcuts ignore keys typed inside a dialog.** Focus is trapped in the dialog, so its
     keys (Space on a button, Escape) belong to it, never to a point recorded behind it.
+11. **`color-scheme` follows the chosen theme.** Native controls paint themselves from it; left at
+    `light dark`, a dark OS drew dark radios and date pickers on the light theme.
 
 ## Accepted trade-offs
 

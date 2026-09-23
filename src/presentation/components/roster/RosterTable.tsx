@@ -2,6 +2,7 @@ import type { Player } from '@domain/index';
 import clsx from 'clsx';
 import { COMMON_BUTTONS, ROSTER, VALIDATION } from '@shared/copy';
 import { PLAYER_ROLE_LABELS } from '@shared/copy/roles';
+import { Checkbox } from '@presentation/components/ui/Checkbox';
 
 export interface RosterTableProps {
   readonly players: readonly Player[];
@@ -76,18 +77,17 @@ export function RosterTable({
                 {player.isLibero ? ROSTER.isLibero : ''}
               </td>
               <td className="px-[var(--sp-3)] py-[var(--sp-2)]">
-                <label className="inline-flex min-h-[var(--hit-min)] items-center gap-[var(--sp-2)]">
-                  <input
-                    type="checkbox"
-                    checked={player.isAvailable}
-                    onChange={(event) => {
-                      onToggleAvailable(player.id, event.target.checked);
-                    }}
-                  />
+                <Checkbox
+                  rowClassName="inline-flex"
+                  checked={player.isAvailable}
+                  onChange={(event) => {
+                    onToggleAvailable(player.id, event.target.checked);
+                  }}
+                >
                   <span className="sr-only">
                     {ROSTER.isAvailable} — {player.name}
                   </span>
-                </label>
+                </Checkbox>
               </td>
               <td className="px-[var(--sp-3)] py-[var(--sp-2)]">
                 <div className="flex gap-[var(--sp-2)]">

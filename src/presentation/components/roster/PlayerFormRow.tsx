@@ -4,6 +4,10 @@ import { PLAYER_ROLES } from '@domain/index';
 import { COMMON_BUTTONS, ROSTER, VALIDATION } from '@shared/copy';
 import { PLAYER_ROLE_LABELS } from '@shared/copy/roles';
 import { Button } from '@presentation/components/ui/Button';
+import { Checkbox } from '@presentation/components/ui/Checkbox';
+import { Input } from '@presentation/components/ui/Input';
+import { Label } from '@presentation/components/ui/Label';
+import { Select } from '@presentation/components/ui/Select';
 
 export interface PlayerFormValues {
   readonly shirtNumber: number;
@@ -43,7 +47,6 @@ export function PlayerFormRow({
   const numberId = useId();
   const nameId = useId();
   const roleId = useId();
-  const liberoId = useId();
   const errorId = useId();
 
   function handleSubmit(): void {
@@ -78,10 +81,10 @@ export function PlayerFormRow({
       </p>
       <div className="flex flex-wrap items-end gap-[var(--sp-4)]">
         <div className="flex flex-col gap-[var(--sp-1)]">
-          <label htmlFor={numberId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
-            {ROSTER.shirtNumber} *
-          </label>
-          <input
+          <Label htmlFor={numberId} required>
+            {ROSTER.shirtNumber}
+          </Label>
+          <Input
             id={numberId}
             type="number"
             min={0}
@@ -90,56 +93,47 @@ export function PlayerFormRow({
             onChange={(event) => {
               setShirtNumber(event.target.value);
             }}
-            className="min-h-[var(--hit-min)] w-20 rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-2)] text-[var(--text)]"
+            className="w-20 px-[var(--sp-2)]"
           />
         </div>
         <div className="flex flex-1 min-w-[200px] flex-col gap-[var(--sp-1)]">
-          <label htmlFor={nameId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
-            {ROSTER.fullName} *
-          </label>
-          <input
+          <Label htmlFor={nameId} required>
+            {ROSTER.fullName}
+          </Label>
+          <Input
             id={nameId}
-            type="text"
             value={name}
             onChange={(event) => {
               setName(event.target.value);
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-3)] text-[var(--text)]"
           />
         </div>
         <div className="flex flex-col gap-[var(--sp-1)]">
-          <label htmlFor={roleId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
-            {ROSTER.role} *
-          </label>
-          <select
+          <Label htmlFor={roleId} required>
+            {ROSTER.role}
+          </Label>
+          <Select
             id={roleId}
             value={role}
             onChange={(event) => {
               setRole(event.target.value as PlayerRole);
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-2)] text-[var(--text)]"
           >
             {PLAYER_ROLES.map((candidate) => (
               <option key={candidate} value={candidate}>
                 {PLAYER_ROLE_LABELS[candidate]}
               </option>
             ))}
-          </select>
+          </Select>
         </div>
-        <label
-          htmlFor={liberoId}
-          className="flex min-h-[var(--hit-min)] items-center gap-[var(--sp-2)] text-[var(--fs-body)] text-[var(--text)]"
+        <Checkbox
+          checked={isLibero}
+          onChange={(event) => {
+            setIsLibero(event.target.checked);
+          }}
         >
-          <input
-            id={liberoId}
-            type="checkbox"
-            checked={isLibero}
-            onChange={(event) => {
-              setIsLibero(event.target.checked);
-            }}
-          />
           {ROSTER.isLibero}
-        </label>
+        </Checkbox>
       </div>
       {error !== null && (
         <p id={errorId} role="alert" className="text-[var(--fs-small)] text-[var(--outcome-error)]">

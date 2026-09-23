@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useId, useMemo, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import type { Match } from '@domain/index';
 import { useArchiveStore } from '@application/stores/archiveStore';
@@ -11,6 +11,9 @@ import { EmptyState, LoadingState } from '@presentation/components/ui/EmptyState
 import { showToast } from '@presentation/components/ui/Toast';
 import { ROUTES } from '@presentation/routes';
 import { ARCHIVE, COMMON_BUTTONS, DIALOGS } from '@shared/copy';
+import { Input } from '@presentation/components/ui/Input';
+import { Checkbox } from '@presentation/components/ui/Checkbox';
+import { Label } from '@presentation/components/ui/Label';
 
 /** "YYYY-MM-DD" -> "DD/MM/YYYY", the format used everywhere in the UX wireframes. */
 function formatItalianDate(isoDate: string): string {
@@ -51,6 +54,7 @@ export function ArchivePage(): React.JSX.Element {
   const importMatch = useArchiveStore((state) => state.importMatch);
   const loadMatch = useMatchStore((state) => state.loadMatch);
 
+  const searchId = useId();
   const [query, setQuery] = useState('');
   const [onlyUnfinished, setOnlyUnfinished] = useState(false);
   const [deleteTarget, setDeleteTarget] = useState<ArchiveEntry | null>(null);
@@ -125,29 +129,25 @@ export function ArchivePage(): React.JSX.Element {
       </header>
 
       <div className="flex flex-wrap items-end gap-[var(--sp-4)]">
-        <label className="flex flex-col gap-[var(--sp-1)]">
-          <span className="text-[var(--fs-small)] font-medium text-[var(--text)]">
-            {ARCHIVE.search}
-          </span>
-          <input
+        <div className="flex flex-col gap-[var(--sp-1)]">
+          <Label htmlFor={searchId}>{ARCHIVE.search}</Label>
+          <Input
+            id={searchId}
             type="search"
             value={query}
             onChange={(event) => {
               setQuery(event.target.value);
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-3)] text-[var(--fs-body)] text-[var(--text)]"
           />
-        </label>
-        <label className="flex items-center gap-[var(--sp-2)] pb-[var(--sp-2)]">
-          <input
-            type="checkbox"
-            checked={onlyUnfinished}
-            onChange={(event) => {
-              setOnlyUnfinished(event.target.checked);
-            }}
-          />
-          solo non terminate
-        </label>
+        </div>
+        <Checkbox
+          checked={onlyUnfinished}
+          onChange={(event) => {
+            setOnlyUnfinished(event.target.checked);
+          }}
+        >
+          {ARCHIVE.onlyUnfinished}
+        </Checkbox>
       </div>
 
       {isLoading && <LoadingState label={ARCHIVE.loading} />}

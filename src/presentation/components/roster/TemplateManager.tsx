@@ -3,6 +3,9 @@ import type { RosterTemplate } from '@domain/index';
 import { COMMON_BUTTONS, DIALOGS, ROSTER } from '@shared/copy';
 import { Button } from '@presentation/components/ui/Button';
 import { Dialog } from '@presentation/components/ui/Dialog';
+import { Label } from '@presentation/components/ui/Label';
+import { Input } from '@presentation/components/ui/Input';
+import { Select } from '@presentation/components/ui/Select';
 
 export interface TemplateManagerProps {
   readonly templates: readonly RosterTemplate[];
@@ -37,17 +40,17 @@ export function TemplateManager({
   return (
     <div className="flex flex-wrap items-end gap-[var(--sp-3)]">
       <div className="flex flex-col gap-[var(--sp-1)]">
-        <label htmlFor={selectId} className="text-[var(--fs-small)] text-[var(--text-muted)]">
+        <Label htmlFor={selectId}>
           {ROSTER.template}
-        </label>
-        <select
+        </Label>
+        <Select
           id={selectId}
           value={selectedId}
           onChange={(event) => {
             setSelectedId(event.target.value);
           }}
           disabled={isLoading || templates.length === 0}
-          className="min-h-[var(--hit-min)] min-w-[200px] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-2)] text-[var(--text)]"
+          className="min-w-[200px]"
         >
           <option value="">
             {isLoading ? ROSTER.loadingTemplates : ROSTER.template}
@@ -57,7 +60,7 @@ export function TemplateManager({
               {template.name}
             </option>
           ))}
-        </select>
+        </Select>
       </div>
 
       <Button
@@ -121,17 +124,15 @@ export function TemplateManager({
         }}
       >
         <div className="flex flex-col gap-[var(--sp-2)]">
-          <label htmlFor="template-save-name" className="text-[var(--fs-small)] text-[var(--text-muted)]">
+          <Label htmlFor="template-save-name">
             {ROSTER.template}
-          </label>
-          <input
+          </Label>
+          <Input
             id="template-save-name"
-            type="text"
             value={saveName}
             onChange={(event) => {
               setSaveName(event.target.value);
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-3)] text-[var(--text)]"
           />
           {saveError !== null && (
             <p role="alert" className="text-[var(--fs-small)] text-[var(--outcome-error)]">
@@ -159,17 +160,15 @@ export function TemplateManager({
         }}
       >
         <div className="flex flex-col gap-[var(--sp-2)]">
-          <label htmlFor="template-rename-name" className="text-[var(--fs-small)] text-[var(--text-muted)]">
+          <Label htmlFor="template-rename-name">
             {ROSTER.template}
-          </label>
-          <input
+          </Label>
+          <Input
             id="template-rename-name"
-            type="text"
             value={renameName}
             onChange={(event) => {
               setRenameName(event.target.value);
             }}
-            className="min-h-[var(--hit-min)] rounded-[var(--radius-md)] border border-[var(--border-strong)] bg-[var(--surface)] px-[var(--sp-3)] text-[var(--text)]"
           />
           {renameError !== null && (
             <p role="alert" className="text-[var(--fs-small)] text-[var(--outcome-error)]">
