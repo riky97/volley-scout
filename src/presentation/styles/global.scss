@@ -146,8 +146,19 @@
 // Global element rules
 // ---------------------------------------------------------------------------------------
 
+// Native controls (radio, checkbox, date picker, scrollbars) draw themselves from
+// color-scheme. "Come il sistema" follows the OS; an explicit choice must win over it, or a
+// dark Windows paints dark radios on the light theme.
 html {
   color-scheme: light dark;
+}
+
+html[data-theme='light'] {
+  color-scheme: light;
+}
+
+html[data-theme='dark'] {
+  color-scheme: dark;
 }
 
 body {
