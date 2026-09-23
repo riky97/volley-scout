@@ -126,6 +126,17 @@ describe('LiveScoutPage', () => {
     expect(screen.getByLabelText('Noi: 0')).toBeInTheDocument();
   });
 
+  it('ignores live shortcuts typed inside an open dialog', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Cambio' }));
+    const dialog = screen.getByRole('dialog', { name: 'Cambio giocatore' });
+    fireEvent.keyDown(within(dialog).getByRole('button', { name: 'Annulla' }), { key: ' ' });
+
+    expect(screen.getByLabelText('Noi: 0')).toBeInTheDocument();
+  });
+
   it('closes an undecided match from the live screen, after confirming', async () => {
     const user = userEvent.setup();
     renderPage();

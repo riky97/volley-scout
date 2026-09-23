@@ -49,6 +49,10 @@ function isTypingTarget(target: EventTarget | null): boolean {
   return tag === 'input' || tag === 'textarea' || tag === 'select';
 }
 
+function isInsideDialog(target: EventTarget | null): boolean {
+  return target instanceof Element && target.closest('[role="dialog"]') !== null;
+}
+
 /**
  * Keyboard layer for the live screen (docs/03-ux-flows.md §5).
  * The shirt-number buffer has priority over every other single-key binding, so "1" "2" always
@@ -67,6 +71,9 @@ export function useLiveShortcuts(handlers: LiveShortcutHandlers): void {
       const current = ref.current;
       if (!current.enabled) return;
       if (isTypingTarget(event.target)) return;
+      // A dialog keeps focus inside itself: its keys (Space on a button, Escape) are its own,
+      // never a point or a skill recorded behind it.
+      if (isInsideDialog(event.target)) return;
 
       const key = event.key;
 
