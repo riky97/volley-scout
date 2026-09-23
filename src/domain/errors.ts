@@ -1,5 +1,6 @@
 export type DomainErrorCode =
   | 'NO_LIVE_SET'
+  | 'SET_NOT_DECIDED'
   | 'SET_ALREADY_LIVE'
   | 'MATCH_CLOSED'
   | 'MATCH_ALREADY_WON'

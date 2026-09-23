@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type {
+  DomainErrorCode,
   EventOutcome,
   Id,
   Lineup,
@@ -48,7 +49,7 @@ export interface MatchStoreState {
   readonly snapshot: MatchSnapshot | null;
   readonly saveState: SaveState;
   /** Domain error code of the last rejected action; the UI turns it into Italian copy. */
-  readonly lastErrorCode: string | null;
+  readonly lastErrorCode: DomainErrorCode | null;
   readonly redoBuffer: ScoutEvent | null;
   readonly isLoading: boolean;
 

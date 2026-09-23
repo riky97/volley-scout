@@ -1,16 +1,15 @@
 import { useId, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import type { CourtPosition, DomainErrorCode, Id, Lineup, Player, TeamSide } from '@domain/index';
+import type { CourtPosition, Id, Lineup, Player, TeamSide } from '@domain/index';
 import { DEFAULT_MATCH_SETTINGS, firstServerOfSet } from '@domain/index';
 import { useMatchStore } from '@application/stores/matchStore';
 import {
   COMMON_BUTTONS,
-  DOMAIN_ERROR_MESSAGES,
   HOME,
   LINEUP,
   NEW_MATCH,
   STEPS,
-  VALIDATION,
+  messageForErrorCode,
 } from '@shared/copy';
 import { Button } from '@presentation/components/ui/Button';
 import { EmptyState } from '@presentation/components/ui/EmptyState';
@@ -53,15 +52,6 @@ function buildLineup(slots: SlotMap): Lineup | null {
     return null;
   }
   return [P1, P2, P3, P4, P5, P6];
-}
-
-const DOMAIN_ERROR_CODES = new Set(Object.keys(DOMAIN_ERROR_MESSAGES));
-
-function messageForErrorCode(code: string): string {
-  if (DOMAIN_ERROR_CODES.has(code)) {
-    return DOMAIN_ERROR_MESSAGES[code as DomainErrorCode];
-  }
-  return VALIDATION.unexpected;
 }
 
 export function LineupPage(): React.JSX.Element {

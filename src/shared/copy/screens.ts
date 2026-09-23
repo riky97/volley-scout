@@ -184,6 +184,7 @@ export const LIVE = {
   substitutionsCount: (us: number) => `Cambi  N ${us}`,
   endSet: 'Termina set',
   endMatch: 'Termina partita',
+  abandonMatch: 'Termina partita',
   stats: 'Statistiche',
   restoring: 'Ripristino della partita…',
   saveFailedBanner: 'Salvataggio non riuscito. I dati restano in memoria.',
@@ -273,6 +274,7 @@ export const ARCHIVE = {
     finished: 'Terminata',
     live: 'In corso',
     setup: 'Da configurare',
+    abandoned: 'Interrotta',
     corrupt: 'File danneggiato',
   },
   restore: 'Ripristina',
@@ -389,6 +391,13 @@ export const DIALOGS = {
       'Chiusura non riuscita. Chiudi la finestra dal Task Manager oppure riprova; la partita resta salvata.',
     cancel: 'Annulla',
     confirm: 'Sì, chiudi',
+  },
+  confirmAbandon: {
+    title: 'Terminare la partita?',
+    body:
+      "La partita verrà chiusa subito, con il punteggio attuale, e segnata come interrotta. Potrai rivederla o eliminarla dall'archivio.",
+    cancel: 'Annulla',
+    confirm: 'Sì, termina',
   },
   unsavedOnClose: {
     title: "Chiudere l'applicazione?",

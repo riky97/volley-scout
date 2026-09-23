@@ -126,6 +126,16 @@ confermi. Poi puoi correggere il sestetto e iniziare il set successivo.
 
 Quando una squadra raggiunge i set necessari, il programma propone di andare al **Riepilogo**.
 
+### Chiudere una partita prima della fine
+
+**Termina set** funziona solo quando il set è deciso, cioè quando una squadra ha raggiunto il
+punteggio previsto con due punti di scarto. Se provi a usarlo prima, il programma te lo dice.
+
+Per chiudere una partita in qualsiasi momento — una prova, una partita sospesa, un errore di
+inserimento — usa **Termina partita**. Ti viene chiesta conferma, la partita viene chiusa con il
+punteggio attuale e finisce in archivio con lo stato **Interrotta**. Da lì puoi riaprirla per
+guardarla o eliminarla definitivamente.
+
 ## 5. Riepilogo ed esportazione
 
 Nel riepilogo trovi i dati della partita, il risultato finale, il punteggio di ogni set, le

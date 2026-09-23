@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest';
 import type { Lineup } from '@domain/index';
 import {
   DomainError,
+  abandonMatch,
   appendNote,
   appendOpponentPoint,
   appendRallyEvent,
@@ -12,6 +13,7 @@ import {
   endSet,
   isDomainError,
   liveSetOf,
+  matchWinnerOf,
   startSet,
   validateLineup,
 } from '@domain/index';
@@ -209,6 +211,34 @@ describe('set end confirmation (evaluateSetEnd is a detector; endSet is the conf
     expect(setEnd?.type === 'set_end' && setEnd.endsMatch).toBe(true);
     // Per §3.5, endSet never auto-finishes the match; only the explicit endMatch does.
     expect(closingEvent.status).toBe('live');
+  });
+});
+
+describe('closing an undecided set or match', () => {
+  it('SET_NOT_DECIDED: ending a set nobody has won names the real problem', () => {
+    const match = startedMatch({ match: makeMatch({ settings: { bestOf: 3, pointsToWinSet: 3 } }) });
+
+    // A test match at 0-0: the operator only wants to get rid of it, and "no live set"
+    // would send them looking for a set that is in fact running.
+    try {
+      endSet(match, 'end0', '2026-01-10T18:01:00.000+01:00');
+      expect.unreachable('endSet should refuse an undecided set');
+    } catch (error) {
+      expect(error).toBeInstanceOf(DomainError);
+      expect((error as DomainError).code).toBe('SET_NOT_DECIDED');
+    }
+  });
+
+  it('abandonMatch closes an undecided match without inventing a winner', () => {
+    let match = startedMatch({ match: makeMatch({ settings: { bestOf: 3, pointsToWinSet: 3 } }) });
+    match = playPoints(match, 'us', 1);
+
+    const abandoned = abandonMatch(match, '2026-01-10T18:05:00.000+01:00');
+
+    expect(abandoned.status).toBe('abandoned');
+    expect(abandoned.closedAt).toBe('2026-01-10T18:05:00.000+01:00');
+    expect(abandoned.sets[0]?.ourPoints).toBe(1);
+    expect(matchWinnerOf(abandoned)).toBeNull();
   });
 });
 

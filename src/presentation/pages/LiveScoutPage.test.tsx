@@ -123,4 +123,28 @@ describe('LiveScoutPage', () => {
     fireEvent.keyDown(document, { key: 'z', ctrlKey: true });
     expect(screen.getByLabelText('Noi: 0')).toBeInTheDocument();
   });
+
+  it('closes an undecided match from the live screen, after confirming', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    // The set is at 0-0: "Termina set" cannot apply, so this is the only way out.
+    await user.click(screen.getByRole('button', { name: 'Termina partita' }));
+
+    const dialog = screen.getByRole('dialog', { name: 'Terminare la partita?' });
+    await user.click(within(dialog).getByRole('button', { name: 'Sì, termina' }));
+
+    expect(useMatchStore.getState().match?.status).toBe('abandoned');
+  });
+
+  it('leaves the match running when the operator cancels', async () => {
+    const user = userEvent.setup();
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Termina partita' }));
+    const dialog = screen.getByRole('dialog', { name: 'Terminare la partita?' });
+    await user.click(within(dialog).getByRole('button', { name: 'Annulla' }));
+
+    expect(useMatchStore.getState().match?.status).toBe('live');
+  });
 });

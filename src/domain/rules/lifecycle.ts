@@ -315,7 +315,9 @@ export function endSet(match: Match, id: Id, timestamp: IsoTimestamp): Match {
   const set = requireLiveSet(match);
 
   const winner = evaluateSetEnd(set, match.settings);
-  if (winner === null) throw new DomainError('NO_LIVE_SET');
+  // There is a live set, it simply has no winner yet: saying "no live set" sends the operator
+  // looking for the wrong problem.
+  if (winner === null) throw new DomainError('SET_NOT_DECIDED');
 
   const setsAfter = countAfter(setsWonFrom(match.sets), winner);
   const event: ScoutEvent = {

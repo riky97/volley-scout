@@ -17,13 +17,6 @@ function formatItalianDate(isoDate: string): string {
   return `${day}/${month}/${year}`;
 }
 
-/**
- * `ARCHIVE.status` (@shared/copy) has no entry for `Match['status'] === 'abandoned'`; the
- * closest normative source is docs/03-ux-flows.md §2.8, which lists the badge as "Interrotta".
- * Used verbatim here as the one missing case, called out in the handoff notes.
- */
-const ABANDONED_LABEL = 'Interrotta';
-
 function statusLabel(status: ArchiveEntry['status']): string {
   switch (status) {
     case 'finished':
@@ -33,7 +26,7 @@ function statusLabel(status: ArchiveEntry['status']): string {
     case 'setup':
       return ARCHIVE.status.setup;
     case 'abandoned':
-      return ABANDONED_LABEL;
+      return ARCHIVE.status.abandoned;
   }
 }
 

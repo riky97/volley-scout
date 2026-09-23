@@ -17,7 +17,7 @@ import { Dialog } from '@presentation/components/ui/Dialog';
 import { EmptyState } from '@presentation/components/ui/EmptyState';
 import { showToast } from '@presentation/components/ui/Toast';
 import { ROUTES } from '@presentation/routes';
-import { COMMON_BUTTONS, DIALOGS, HOME, LIVE, TOASTS, messageForError } from '@shared/copy';
+import { COMMON_BUTTONS, DIALOGS, HOME, LIVE, TOASTS, messageForErrorCode } from '@shared/copy';
 import styles from './LiveScoutPage.module.scss';
 
 const NUMBER_BUFFER_DELAY_MS = 500;
@@ -45,6 +45,7 @@ export function LiveScoutPage(): React.JSX.Element {
   const [substitutionOpen, setSubstitutionOpen] = useState(false);
   const [timeoutOpen, setTimeoutOpen] = useState(false);
   const [endSetRequested, setEndSetRequested] = useState(false);
+  const [abandonRequested, setAbandonRequested] = useState(false);
   /** Score at which the operator dismissed the automatic set-end dialog. */
   const [endSetDismissedAt, setEndSetDismissedAt] = useState<string | null>(null);
   /** Set to true when the operator dismisses the end-of-set prompt to stay on this screen. */
@@ -81,7 +82,7 @@ export function LiveScoutPage(): React.JSX.Element {
     () =>
       useMatchStore.subscribe((state, previous) => {
         if (state.lastErrorCode !== null && state.lastErrorCode !== previous.lastErrorCode) {
-          showToast(messageForError(state.lastErrorCode), 'error');
+          showToast(messageForErrorCode(state.lastErrorCode), 'error');
           state.clearError();
         }
       }),
@@ -124,6 +125,7 @@ export function LiveScoutPage(): React.JSX.Element {
   const undo = useMatchStore((state) => state.undo);
   const redo = useMatchStore((state) => state.redo);
   const endCurrentSet = useMatchStore((state) => state.endCurrentSet);
+  const abandonCurrentMatch = useMatchStore((state) => state.abandonCurrentMatch);
   const deleteEvent = useMatchStore((state) => state.deleteEvent);
 
   const selectOutcome = useCallback(
@@ -395,6 +397,17 @@ export function LiveScoutPage(): React.JSX.Element {
             {LIVE.endSet}
           </Button>
         )}
+        {setFinished ? null : (
+          <Button
+            size="live"
+            variant="secondary"
+            onClick={() => {
+              setAbandonRequested(true);
+            }}
+          >
+            {LIVE.abandonMatch}
+          </Button>
+        )}
       </div>
 
       <p aria-live="polite" className="sr-only">
@@ -461,6 +474,23 @@ export function LiveScoutPage(): React.JSX.Element {
           setEndSetRequested(false);
           setEndSetDismissedAt(null);
           setNextStepDismissed(false);
+        }}
+      />
+
+      <Dialog
+        open={abandonRequested}
+        title={DIALOGS.confirmAbandon.title}
+        description={DIALOGS.confirmAbandon.body}
+        confirmLabel={DIALOGS.confirmAbandon.confirm}
+        cancelLabel={DIALOGS.confirmAbandon.cancel}
+        destructive
+        onCancel={() => {
+          setAbandonRequested(false);
+        }}
+        onConfirm={() => {
+          setAbandonRequested(false);
+          abandonCurrentMatch();
+          void navigate(ROUTES.summary);
         }}
       />
 
