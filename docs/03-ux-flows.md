@@ -432,7 +432,7 @@ outcome button 108×64 → 120×72 px · express button height 64 → 72 px · U
 
 ```
 ┌──────────────────────────────────────────────────────────────────────────────┐
-│  Archivio partite                                  [ Importa JSON ]          │
+│  Archivio partite                               [ Importa partita ]          │
 │  Cerca [ Sandrigo            ]  Stagione [ 2026 ▾ ]  Esito [ Tutti ▾ ]       │
 ├──────────────────────────────────────────────────────────────────────────────┤
 │  ┌────────────┬───────────────────────────┬─────────┬───────────┬──────────┐ │
@@ -939,7 +939,7 @@ manual keyboard-only pass per screen in `docs/07-qa-scenarios.md`.
 | Scout live | Player row (roving tabindex, first chip) → skill row → outcome row → `Annulla azione` → express buttons → `Termina set` → court → event list → sidebar. `Annulla azione` is reachable with a single `Maiusc+Tab` from the outcome row. |
 | Statistiche live | Set selector → sort control → table → `Chiudi`. |
 | Riepilogo finale | `Esporta PDF` → other exports → set table → player table → `Torna alla home`. |
-| Archivio partite | Search field → filters → first row → row actions → `Importa JSON`. |
+| Archivio partite | Search field → filters → first row → row actions → `Importa partita`. |
 | Impostazioni | Theme radio group → defaults → checkboxes → `Apri cartella`. |
 
 After any commit on the live screen, focus **returns to the player row and never to `document.body`**.
@@ -1239,7 +1239,7 @@ Single source of truth. Formal-neutral register, buttons in the imperative, no e
 | `export.xlsx` | `Esporta XLSX` |
 | `export.json` | `Esporta JSON` |
 | `export.running` | `Esportazione in corso…` |
-| `import.json` | `Importa JSON` |
+| `import.json` | `Importa partita` |
 
 ### 9.6 Archive and settings
 

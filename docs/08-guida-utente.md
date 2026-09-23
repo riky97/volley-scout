@@ -217,7 +217,10 @@ Impostazioni. Dalla versione da browser la cartella dati non esiste: l'unico bac
 Per le rose usa **Esporta rose** in **Gestione rose**.
 
 **Le partite fatte sul tablet le ritrovo sul computer?** Non da sole: le due versioni salvano in
-posti diversi. Esporta il JSON dal tablet e importalo dal programma installato.
+posti diversi. Esporta il JSON dal tablet e, sul computer, aprilo da **Archivio partite → Importa
+partita**. Se la stessa partita c'è già, viene sostituita solo se il file è più recente; importare
+due volte lo stesso file non crea doppioni. Lo stesso pulsante ti serve per rimettere nel tablet le
+partite dopo una reinstallazione.
 
 **Il libero può battere?** Le regole non lo prevedono. Se il libero finisce in posizione P1 il
 programma lo segnala, ma non ti blocca.

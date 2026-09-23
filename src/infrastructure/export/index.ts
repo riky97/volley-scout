@@ -45,8 +45,8 @@ export async function exportMatch(
 }
 
 export { buildExportFileName } from './fileName';
-export { buildJsonExport, importMatchJson } from './jsonExport';
-export type { ImportMatchResult } from './jsonExport';
+export { buildJsonExport, importMatchJson, pickMatchFile } from './jsonExport';
+export type { ImportMatchResult, PickMatchOutcome } from './jsonExport';
 export { buildPdfExport } from './pdfExport';
 export { buildXlsxExport } from './xlsxExport';
 export {

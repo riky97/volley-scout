@@ -3,10 +3,12 @@ import { useNavigate } from 'react-router-dom';
 import type { Match } from '@domain/index';
 import { useArchiveStore } from '@application/stores/archiveStore';
 import { useMatchStore } from '@application/stores/matchStore';
+import { pickMatchFile } from '@infrastructure/export';
 import type { ArchiveEntry } from '@infrastructure/storage';
 import { Button } from '@presentation/components/ui/Button';
 import { Dialog } from '@presentation/components/ui/Dialog';
 import { EmptyState, LoadingState } from '@presentation/components/ui/EmptyState';
+import { showToast } from '@presentation/components/ui/Toast';
 import { ROUTES } from '@presentation/routes';
 import { ARCHIVE, COMMON_BUTTONS, DIALOGS } from '@shared/copy';
 
@@ -46,6 +48,7 @@ export function ArchivePage(): React.JSX.Element {
   const isLoading = useArchiveStore((state) => state.isLoading);
   const refresh = useArchiveStore((state) => state.refresh);
   const deleteMatch = useArchiveStore((state) => state.deleteMatch);
+  const importMatch = useArchiveStore((state) => state.importMatch);
   const loadMatch = useMatchStore((state) => state.loadMatch);
 
   const [query, setQuery] = useState('');
@@ -85,6 +88,22 @@ export function ArchivePage(): React.JSX.Element {
     setDeleteTarget(null);
   }
 
+  async function importFromFile(): Promise<void> {
+    const picked = await pickMatchFile();
+    if (picked.kind === 'cancelled') return;
+    if (picked.kind === 'invalid') {
+      showToast(ARCHIVE.error.importFailed, 'error');
+      return;
+    }
+    try {
+      const decision = await importMatch(picked.match);
+      const tone = decision === 'add' || decision === 'update' ? 'success' : 'warning';
+      showToast(ARCHIVE.imported[decision], tone);
+    } catch {
+      showToast(ARCHIVE.error.importFailed, 'error');
+    }
+  }
+
   function clearFilters(): void {
     setQuery('');
     setOnlyUnfinished(false);
@@ -94,6 +113,15 @@ export function ArchivePage(): React.JSX.Element {
     <div className="mx-auto flex max-w-[1100px] flex-col gap-[var(--sp-5)] p-[var(--sp-5)]">
       <header className="flex items-center justify-between">
         <h1 className="text-[var(--fs-h1)] font-semibold text-[var(--text)]">{ARCHIVE.title}</h1>
+        <Button
+          variant="secondary"
+          disabled={isLoading}
+          onClick={() => {
+            void importFromFile();
+          }}
+        >
+          {ARCHIVE.importMatch}
+        </Button>
       </header>
 
       <div className="flex flex-wrap items-end gap-[var(--sp-4)]">

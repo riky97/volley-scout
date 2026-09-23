@@ -1,4 +1,6 @@
 import type { Match } from '@domain/index';
+import type { ExportTarget } from '@application/ports/storage';
+import { createExportTarget } from '@infrastructure/storage';
 import type { ParseErrorCode } from '@infrastructure/storage/schemas';
 import { parseJson, parseMatch } from '@infrastructure/storage/schemas';
 
@@ -24,4 +26,23 @@ export function importMatchJson(text: string): ImportMatchResult {
   if (!parsed.ok) return { ok: false, code: parsed.code, detail: parsed.detail };
 
   return { ok: true, match: parsed.value };
+}
+
+export type PickMatchOutcome =
+  | { readonly kind: 'picked'; readonly match: Match }
+  | { readonly kind: 'cancelled' }
+  | { readonly kind: 'invalid' };
+
+/** Lets the operator pick an exported match file and validates it. Never throws. */
+export async function pickMatchFile(
+  target: ExportTarget = createExportTarget(),
+): Promise<PickMatchOutcome> {
+  try {
+    const text = await target.pickAndReadJson();
+    if (text === null) return { kind: 'cancelled' };
+    const result = importMatchJson(text);
+    return result.ok ? { kind: 'picked', match: result.match } : { kind: 'invalid' };
+  } catch {
+    return { kind: 'invalid' };
+  }
 }

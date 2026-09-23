@@ -314,7 +314,13 @@ export const SUMMARY = {
 
 export const ARCHIVE = {
   title: 'Archivio partite',
-  importJson: 'Importa JSON',
+  importMatch: 'Importa partita',
+  imported: {
+    add: 'Partita importata.',
+    update: 'Partita aggiornata con la copia importata.',
+    unchanged: 'Questa partita è già presente, nella stessa versione o più recente.',
+    busy: 'Salvataggio in corso: riprova tra un attimo.',
+  },
   search: 'Cerca',
   season: 'Stagione',
   result: 'Esito',

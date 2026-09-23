@@ -104,4 +104,9 @@ reloading it, the app also calls `registration.update()` whenever it returns to 
 
 Removing the home-screen icon on iOS deletes that app's storage. Rosters can be carried across a
 reinstall with the roster backup (`rose_volley-scout_<date>.json`, `kind: volley-scout-rosters`,
-Zod-validated on import and merged by id, newer `updatedAt` wins).
+Zod-validated on import and merged by id, newer `updatedAt` wins). Matches come back the same
+way through **Importa partita** in the archive: the match export is validated with the match
+schema and kept only when this device has no copy or an older one. If that match is the one
+loaded, the store reloads it from disk; while its save is in flight nothing is written, or the
+pending write would bring the older copy back. Timestamps are compared as instants
+(`Date.parse`), never as strings, because they carry their UTC offset.
