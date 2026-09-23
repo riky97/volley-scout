@@ -1,1 +1,7 @@
-export { registerServiceWorker, requestPersistentStorage } from './webApp';
+export {
+  applyUpdate,
+  isUpdateReady,
+  registerServiceWorker,
+  requestPersistentStorage,
+  subscribeToUpdate,
+} from './webApp';

@@ -1,10 +1,15 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest';
-import { render, screen, within } from '@testing-library/react';
+import { render, screen, waitFor, within } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import { MemoryRouter } from 'react-router-dom';
 import type { RosterTemplate } from '@domain/index';
 import { createPlayer, createRosterTemplate } from '@domain/index';
+import { useToastStore } from '@presentation/components/ui/Toast';
 import { RosterManagerPage } from './RosterManagerPage';
+
+function toastShown(message: string): boolean {
+  return useToastStore.getState().toasts.some((toast) => toast.message === message);
+}
 
 const archiveStoreState = vi.hoisted(() => ({
   matches: [],
@@ -15,7 +20,15 @@ const archiveStoreState = vi.hoisted(() => ({
   saveTemplate: vi.fn().mockResolvedValue(undefined),
   updateTemplate: vi.fn().mockResolvedValue(undefined),
   deleteTemplate: vi.fn().mockResolvedValue(undefined),
+  importTemplates: vi.fn(),
 }));
+
+const backup = vi.hoisted(() => ({
+  exportRosters: vi.fn(),
+  pickRosterBackup: vi.fn(),
+}));
+
+vi.mock('@infrastructure/export', () => backup);
 
 vi.mock('@application/stores/archiveStore', () => ({
   useArchiveStore: (selector: (state: typeof archiveStoreState) => unknown) =>
@@ -49,6 +62,7 @@ describe('RosterManagerPage', () => {
   beforeEach(() => {
     archiveStoreState.templates = [];
     vi.clearAllMocks();
+    useToastStore.setState({ toasts: [] });
   });
 
   it('invites the operator to prepare a squad when none is saved', () => {
@@ -119,5 +133,51 @@ describe('RosterManagerPage', () => {
     await user.click(within(reopened).getByRole('button', { name: 'Elimina' }));
 
     expect(archiveStoreState.deleteTemplate).toHaveBeenCalledWith('template-1');
+  });
+  it('restores rosters from a backup file even when the list is empty', async () => {
+    const user = userEvent.setup();
+    backup.pickRosterBackup.mockResolvedValue({ kind: 'picked', rosters: [template()] });
+    archiveStoreState.importTemplates.mockResolvedValue({
+      toSave: [template()],
+      added: 1,
+      updated: 0,
+      unchanged: 0,
+    });
+    renderPage();
+
+    expect(screen.getByRole('button', { name: 'Esporta rose' })).toBeDisabled();
+    await user.click(screen.getByRole('button', { name: 'Importa rose' }));
+
+    expect(archiveStoreState.importTemplates).toHaveBeenCalledWith([template()]);
+    await waitFor(() => {
+      expect(toastShown('Importazione completata: 1 rosa nuova, 0 aggiornate.')).toBe(true);
+    });
+  });
+
+  it('refuses a file that is not a roster backup', async () => {
+    const user = userEvent.setup();
+    backup.pickRosterBackup.mockResolvedValue({ kind: 'invalid' });
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Importa rose' }));
+
+    await waitFor(() => {
+      expect(toastShown('File non valido. Importazione annullata.')).toBe(true);
+    });
+    expect(archiveStoreState.importTemplates).not.toHaveBeenCalled();
+  });
+
+  it('exports every saved roster in one file', async () => {
+    const user = userEvent.setup();
+    archiveStoreState.templates = [template()];
+    backup.exportRosters.mockResolvedValue({ kind: 'saved', path: 'rose.json' });
+    renderPage();
+
+    await user.click(screen.getByRole('button', { name: 'Esporta rose' }));
+
+    expect(backup.exportRosters).toHaveBeenCalledWith([template()], expect.any(String));
+    await waitFor(() => {
+      expect(toastShown('Rose esportate.')).toBe(true);
+    });
   });
 });

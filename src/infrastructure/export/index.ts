@@ -49,3 +49,11 @@ export { buildJsonExport, importMatchJson } from './jsonExport';
 export type { ImportMatchResult } from './jsonExport';
 export { buildPdfExport } from './pdfExport';
 export { buildXlsxExport } from './xlsxExport';
+export {
+  buildRosterBackup,
+  buildRosterBackupFileName,
+  exportRosters,
+  importRostersJson,
+  pickRosterBackup,
+} from './rosterBackup';
+export type { ImportRostersResult, PickRostersOutcome } from './rosterBackup';

@@ -44,3 +44,10 @@ export const SAVE_STATE_LABELS = {
 
 /** Shown when an event refers to a player who is no longer in the roster. */
 export const UNKNOWN_PLAYER = 'Giocatore sconosciuto';
+
+/** Banner shown when a newer build of the web app is ready to replace the running one. */
+export const APP_UPDATE = {
+  available: 'È disponibile una nuova versione di Volley Scout.',
+  dataKept: 'Rose e partite restano salvate.',
+  button: 'Aggiorna',
+} as const;

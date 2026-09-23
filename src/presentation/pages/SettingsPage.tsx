@@ -2,6 +2,8 @@ import type { AppSettings, BestOf, ThemeMode } from '@domain/index';
 import { useSettingsStore } from '@application/stores/settingsStore';
 import { showToast } from '@presentation/components/ui/Toast';
 import { SETTINGS, TOASTS } from '@shared/copy';
+// Named import: the bundler keeps only this field, not the dependency list.
+import { version as APP_VERSION } from '../../../package.json';
 
 /**
  * Short reference for the live-screen shortcuts, taken verbatim from
@@ -177,6 +179,12 @@ export function SettingsPage(): React.JSX.Element {
             {SETTINGS.dataFolder}
           </span>
           <p className="text-[var(--fs-body)] text-[var(--text-muted)]">{dataLocation}</p>
+        </div>
+        <div>
+          <span className="text-[var(--fs-small)] font-medium text-[var(--text)]">
+            {SETTINGS.version}
+          </span>
+          <p className="text-[var(--fs-body)] text-[var(--text-muted)]">{APP_VERSION}</p>
         </div>
       </section>
 

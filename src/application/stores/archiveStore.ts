@@ -4,6 +4,8 @@ import { createRosterTemplate } from '@domain/index';
 import type { ArchiveEntry } from '@infrastructure/storage';
 import { repository } from './matchStore';
 import { newId, nowIso } from '../clock';
+import type { RosterMerge } from '../services/mergeRosters';
+import { mergeRosters } from '../services/mergeRosters';
 
 export interface ArchiveStoreState {
   readonly matches: readonly ArchiveEntry[];
@@ -14,6 +16,8 @@ export interface ArchiveStoreState {
   saveTemplate: (name: string, teamName: string, players: readonly Player[]) => Promise<void>;
   updateTemplate: (template: RosterTemplate, players: readonly Player[]) => Promise<void>;
   deleteTemplate: (id: Id) => Promise<void>;
+  /** Saves the rosters of a backup that are new or newer than the local copy. */
+  importTemplates: (rosters: readonly RosterTemplate[]) => Promise<RosterMerge>;
 }
 
 export const useArchiveStore = create<ArchiveStoreState>((set, get) => ({
@@ -55,5 +59,13 @@ export const useArchiveStore = create<ArchiveStoreState>((set, get) => ({
   deleteTemplate: async (id) => {
     await repository.deleteTemplate(id);
     set({ templates: get().templates.filter((template) => template.id !== id) });
+  },
+
+  importTemplates: async (rosters) => {
+    // Merge against what is on disk, not against a list that may not have loaded yet.
+    const merge = mergeRosters(await repository.listTemplates(), rosters);
+    for (const roster of merge.toSave) await repository.saveTemplate(roster);
+    await get().refresh();
+    return merge;
   },
 }));

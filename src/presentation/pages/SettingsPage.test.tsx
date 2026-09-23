@@ -3,6 +3,7 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { AppSettings } from '@domain/index';
 import { DEFAULT_APP_SETTINGS } from '@domain/index';
+import { version } from '../../../package.json';
 import { SettingsPage } from './SettingsPage';
 
 const settingsStoreState = vi.hoisted(() => ({
@@ -25,6 +26,12 @@ describe('SettingsPage', () => {
   it('shows the read-only data folder location', () => {
     render(<SettingsPage />);
     expect(screen.getByText('C:\\Users\\Test\\volley-scout')).toBeInTheDocument();
+  });
+
+  it('shows the installed version, so the operator can tell an update went through', () => {
+    render(<SettingsPage />);
+    expect(screen.getByText('Versione')).toBeInTheDocument();
+    expect(screen.getByText(version)).toBeInTheDocument();
   });
 
   it('saves the theme through the settings store when a radio option is chosen', async () => {

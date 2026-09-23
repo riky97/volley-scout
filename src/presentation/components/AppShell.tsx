@@ -4,6 +4,7 @@ import clsx from 'clsx';
 import { APP_NAME, NAV, SAVE_STATE_LABELS } from '@shared/copy';
 import { ROUTES } from '../routes';
 import { useMatchStore } from '@application/stores/matchStore';
+import { UpdateBanner } from './UpdateBanner';
 import styles from './AppShell.module.scss';
 
 const NAV_ITEMS = [
@@ -46,7 +47,11 @@ export function AppShell({ children }: { readonly children: ReactNode }): React.
           </span>
         )}
       </header>
-      <main className={styles.main}>{children}</main>
+      <main className={styles.main}>
+        {/* Never on the live screen: an update is for between matches, not between rallies. */}
+        {!isLive && <UpdateBanner />}
+        {children}
+      </main>
     </div>
   );
 }

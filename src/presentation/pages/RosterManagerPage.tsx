@@ -3,7 +3,8 @@ import { useNavigate } from 'react-router-dom';
 import type { Player, RosterTemplate } from '@domain/index';
 import { createPlayer, duplicateShirtNumbers, hasDuplicateShirtNumbers } from '@domain/index';
 import { useArchiveStore } from '@application/stores/archiveStore';
-import { newId } from '@application/clock';
+import { newId, nowIso } from '@application/clock';
+import { exportRosters, pickRosterBackup } from '@infrastructure/export';
 import { COMMON_BUTTONS, HOME, ROSTER, ROSTER_MANAGER } from '@shared/copy';
 import { Button } from '@presentation/components/ui/Button';
 import { Card } from '@presentation/components/ui/Card';
@@ -55,6 +56,7 @@ export function RosterManagerPage(): React.JSX.Element {
   const saveTemplate = useArchiveStore((state) => state.saveTemplate);
   const updateTemplate = useArchiveStore((state) => state.updateTemplate);
   const deleteTemplate = useArchiveStore((state) => state.deleteTemplate);
+  const importTemplates = useArchiveStore((state) => state.importTemplates);
 
   const [draft, setDraft] = useState<RosterDraft | null>(null);
   const [editingPlayerId, setEditingPlayerId] = useState<string | null>(null);
@@ -119,6 +121,32 @@ export function RosterManagerPage(): React.JSX.Element {
       .catch(() => {
         showToast(ROSTER.error.templateSaveFailed, 'error');
       });
+  }
+
+  function exportAll(): void {
+    void exportRosters(templates, nowIso()).then((outcome) => {
+      if (outcome.kind === 'saved') showToast(ROSTER_MANAGER.backup.exported, 'success');
+      if (outcome.kind === 'failed') showToast(ROSTER_MANAGER.backup.exportFailed, 'error');
+    });
+  }
+
+  function importBackup(): void {
+    void pickRosterBackup().then(async (outcome) => {
+      if (outcome.kind === 'cancelled') return;
+      if (outcome.kind === 'invalid') {
+        showToast(ROSTER_MANAGER.backup.importFailed, 'error');
+        return;
+      }
+      try {
+        const merge = await importTemplates(outcome.rosters);
+        showToast(
+          ROSTER_MANAGER.backup.imported(merge.added, merge.updated, merge.unchanged),
+          'success',
+        );
+      } catch {
+        showToast(ROSTER.error.templateSaveFailed, 'error');
+      }
+    });
   }
 
   const editedPlayer = players.find((player) => player.id === editingPlayerId);
@@ -302,6 +330,21 @@ export function RosterManagerPage(): React.JSX.Element {
           </ul>
         </>
       )}
+
+      {/* Available even with no roster: restoring a backup is exactly the empty-list case. */}
+      <Card title={ROSTER_MANAGER.backup.title}>
+        <p className="mb-[var(--sp-3)] text-[var(--fs-body)] text-[var(--text-muted)]">
+          {ROSTER_MANAGER.backup.hint}
+        </p>
+        <div className="flex flex-wrap gap-[var(--sp-3)]">
+          <Button variant="secondary" disabled={templates.length === 0} onClick={exportAll}>
+            {ROSTER_MANAGER.backup.export}
+          </Button>
+          <Button variant="secondary" disabled={isLoading} onClick={importBackup}>
+            {ROSTER_MANAGER.backup.import}
+          </Button>
+        </div>
+      </Card>
 
       <div>
         <Button

@@ -47,10 +47,15 @@ const CACHE = 'volley-scout-${version}';
 const ASSETS = ${JSON.stringify(assets, null, 2)};
 
 self.addEventListener('install', (event) => {
-  // No skipWaiting: a new build must never swap assets under a match in progress.
+  // No automatic skipWaiting: a new build must never swap assets under a match in progress.
   event.waitUntil(
     caches.open(CACHE).then((cache) => cache.addAll(ASSETS.map((asset) => new URL(asset, self.registration.scope).href))),
   );
+});
+
+// The operator asks for the swap from the app's "Aggiorna" button, never during live scouting.
+self.addEventListener('message', (event) => {
+  if (event.data === 'SKIP_WAITING') void self.skipWaiting();
 });
 
 self.addEventListener('activate', (event) => {

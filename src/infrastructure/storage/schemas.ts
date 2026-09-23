@@ -175,6 +175,14 @@ export const rosterTemplateSchema = z.object({
   updatedAt: timestampSchema,
 });
 
+/** Every saved roster in one file, so a reinstalled web app can get them all back at once. */
+export const rosterBackupSchema = z.object({
+  schemaVersion: z.literal(SCHEMA_VERSION),
+  kind: z.literal('volley-scout-rosters'),
+  exportedAt: timestampSchema,
+  rosters: z.array(rosterTemplateSchema),
+});
+
 export const appSettingsSchema = z.object({
   schemaVersion: z.literal(SCHEMA_VERSION),
   theme: z.enum(['light', 'dark', 'system']),
@@ -227,6 +235,12 @@ export function parseMatch(raw: unknown): ParseResult<Match> {
 
 export function parseRosterTemplate(raw: unknown): ParseResult<RosterTemplate> {
   return parseWith(rosterTemplateSchema, raw, (value) => value as RosterTemplate);
+}
+
+export function parseRosterBackup(raw: unknown): ParseResult<readonly RosterTemplate[]> {
+  return parseWith(rosterBackupSchema, raw, (value) =>
+    (value as z.infer<typeof rosterBackupSchema>).rosters.map((roster) => roster as RosterTemplate),
+  );
 }
 
 export function parseAppSettings(raw: unknown): ParseResult<AppSettings> {

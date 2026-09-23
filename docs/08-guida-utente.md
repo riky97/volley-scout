@@ -25,6 +25,20 @@ copia di sicurezza. Per scoutare una partita vera resta consigliato il programma
 
 Sul tablet non hai la tastiera, quindi le scorciatoie non ci sono: si registra toccando i pulsanti.
 
+### Aggiornare la versione da tablet
+
+**Non togliere mai l'icona dalla schermata Home per aggiornare.** Su iPad l'app aggiunta alla Home
+ha una memoria sua: togliendo l'icona, iPadOS cancella anche rose e partite.
+
+Quando esce una nuova versione, l'app la scarica da sola appena la apri con internet attivo. In
+alto compare **«È disponibile una nuova versione di Volley Scout»**: tocca **Aggiorna** e l'app si
+ricarica già aggiornata, con tutti i dati al loro posto. L'avviso non compare mai durante lo scout
+live, così un aggiornamento non può interrompere una partita. Per controllare quale versione hai,
+guarda **Impostazioni → Versione**.
+
+Se l'avviso non compare, chiudi del tutto l'app (scorri dal basso e spingi via la scheda di Volley
+Scout), riaprila, aspetta qualche secondo e ripeti: al secondo avvio parte la versione nuova.
+
 ## 2. Prima di una partita
 
 ### Preparare la rosa una volta sola
@@ -36,6 +50,11 @@ giocatori quando vuoi, senza dover creare una partita. Dai un nome alla rosa (pe
 Quando poi crei una partita, al passo **Rosa** scegli quella rosa dal menu **Modello roster** e
 premi **Carica modello**: i giocatori vengono inseriti tutti insieme. Le modifiche fatte durante
 una partita restano in quella partita e non toccano la rosa salvata.
+
+Nel riquadro **Copia di sicurezza** della stessa pagina, **Esporta rose** salva tutte le rose in un
+unico file (`rose_volley-scout_<data>.json`). Tienilo da parte: se reinstalli l'app o passi a un
+altro dispositivo, **Importa rose** le rimette tutte. Importare lo stesso file due volte non crea
+doppioni, e una rosa modificata dopo l'esportazione non viene sovrascritta dalla copia più vecchia.
 
 ### Creare la partita
 
@@ -66,7 +85,8 @@ una partita restano in quella partita e non toccano la rosa salvata.
 La schermata **Scout live** è divisa in quattro zone:
 
 - in alto il **punteggio**, i set vinti e l'indicazione di chi è al servizio;
-- a sinistra il **campo** con i sei giocatori e i contatori di time-out e cambi;
+- a sinistra il **campo** con i sei giocatori, sotto di loro i **liberi** (non ruotano: toccali per
+  segnare ricezione o difesa) e i contatori di time-out e cambi;
 - al centro il **pannello azione**;
 - a destra l'elenco delle **ultime azioni**.
 
@@ -183,6 +203,7 @@ avvisa, continuando a funzionare normalmente.
 - **Conferma automatica** delle azioni durante la partita.
 - **Scorciatoie da tastiera** attive o disattivate.
 - **Cartella dati**: dove sono salvate le partite su questo computer.
+- **Versione**: la versione di Volley Scout in uso.
 
 ## 8. Domande frequenti
 
@@ -193,6 +214,7 @@ squadra; degli avversari tiene il punteggio con **Punto avversario**.
 
 **Come faccio un backup?** Esporta la partita in JSON, oppure copia la cartella dati indicata nelle
 Impostazioni. Dalla versione da browser la cartella dati non esiste: l'unico backup è il file JSON.
+Per le rose usa **Esporta rose** in **Gestione rose**.
 
 **Le partite fatte sul tablet le ritrovo sul computer?** Non da sole: le due versioni salvano in
 posti diversi. Esporta il JSON dal tablet e importalo dal programma installato.

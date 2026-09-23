@@ -158,6 +158,23 @@ export const ROSTER_MANAGER = {
     noPlayers: 'Aggiungi almeno un giocatore.',
     duplicateShirtNumber: 'Ci sono numeri di maglia ripetuti.',
   },
+  backup: {
+    title: 'Copia di sicurezza',
+    hint: "Salva tutte le rose in un file. Se reinstalli l'app o cambi dispositivo, le recuperi con «Importa rose».",
+    export: 'Esporta rose',
+    import: 'Importa rose',
+    exported: 'Rose esportate.',
+    exportFailed: 'Esportazione non riuscita.',
+    importFailed: 'File non valido. Importazione annullata.',
+    imported: (added: number, updated: number, unchanged: number) => {
+      const parts = [
+        added === 1 ? '1 rosa nuova' : `${String(added)} rose nuove`,
+        updated === 1 ? '1 aggiornata' : `${String(updated)} aggiornate`,
+      ];
+      if (unchanged > 0) parts.push(unchanged === 1 ? '1 già presente' : `${String(unchanged)} già presenti`);
+      return `Importazione completata: ${parts.join(', ')}.`;
+    },
+  },
   confirmDelete: {
     title: 'Eliminare la rosa?',
     body: (name: string) => `"${name}" verrà eliminata definitivamente. Le partite già registrate non cambiano.`,
@@ -350,6 +367,7 @@ export const SETTINGS = {
   shortcutsEnabled: 'Scorciatoie da tastiera attive',
   data: 'Dati',
   dataFolder: 'Cartella dati',
+  version: 'Versione',
   openFolder: 'Apri cartella',
   manageTemplates: 'Gestisci modelli roster',
   shortcuts: 'Scorciatoie da tastiera',

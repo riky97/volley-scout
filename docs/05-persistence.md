@@ -94,5 +94,14 @@ from a tablet. The `.exe` remains the recommended way to scout a real match.
 
 Offline start-up comes from `scripts/buildServiceWorker.mjs`, which precaches the exact asset list
 of the build, including the lazily loaded XLSX and PDF chunks, so exporting works without a
-connection. The worker never calls `skipWaiting`: a newly deployed build waits until every tab is
-closed, so assets can never swap under a match in progress.
+connection. The worker never activates on its own: a newly deployed build waits until every tab is closed,
+or until the operator taps **Aggiorna** on the banner that `watchForUpdates` raises once the new
+build has installed. The tap posts `SKIP_WAITING` to the waiting worker and reloads on
+`controllerchange`; IndexedDB is untouched, so rosters and matches survive. The banner is never
+shown on the live screen and its button stays disabled while a save is pending, so neither a
+rally nor a write can be cut by the reload. Because iOS resumes a home-screen app without
+reloading it, the app also calls `registration.update()` whenever it returns to the foreground.
+
+Removing the home-screen icon on iOS deletes that app's storage. Rosters can be carried across a
+reinstall with the roster backup (`rose_volley-scout_<date>.json`, `kind: volley-scout-rosters`,
+Zod-validated on import and merged by id, newer `updatedAt` wins).
