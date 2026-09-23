@@ -1,4 +1,5 @@
 import { useEffect } from 'react';
+import { createPortal } from 'react-dom';
 import { create } from 'zustand';
 import clsx from 'clsx';
 import { COMMON_BUTTONS } from '@shared/copy';
@@ -85,10 +86,14 @@ function ToastRow({ toast }: { readonly toast: Toast }): React.JSX.Element {
   );
 }
 
-/** Non-critical feedback only; errors that block the operator use a dialog instead. */
+/**
+ * Non-critical feedback only; errors that block the operator use a dialog instead.
+ * Portalled to <body>: a modal dialog hides the app root from assistive technology, but never
+ * an element that contains a live region, so a toaster inside the root would keep it exposed.
+ */
 export function Toaster(): React.JSX.Element {
   const toasts = useToastStore((state) => state.toasts);
-  return (
+  return createPortal(
     <div
       className="pointer-events-none fixed bottom-[var(--sp-5)] right-[var(--sp-5)] z-50 flex w-[380px] flex-col gap-[var(--sp-3)]"
       role="status"
@@ -99,6 +104,7 @@ export function Toaster(): React.JSX.Element {
           <ToastRow toast={toast} />
         </div>
       ))}
-    </div>
+    </div>,
+    document.body,
   );
 }

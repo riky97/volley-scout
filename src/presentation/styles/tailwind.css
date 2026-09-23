@@ -1,3 +1,28 @@
 /* Tailwind v4 entry. Kept as plain CSS so the Tailwind Vite plugin processes it:
    a Sass @import would inline the file before the plugin ever sees it. */
 @import "tailwindcss";
+
+/* shadcn/ui components speak in their own colour names. Point each one at our tokens (defined
+   in global.scss for light and dark), so a component added with the shadcn CLI already looks
+   like the rest of the app. Note shadcn's "accent" is a hover surface, not our brand --accent,
+   which shadcn calls "primary". */
+@theme inline {
+  --color-background: var(--bg);
+  --color-foreground: var(--text);
+  --color-card: var(--surface);
+  --color-card-foreground: var(--text);
+  --color-popover: var(--surface);
+  --color-popover-foreground: var(--text);
+  --color-primary: var(--accent);
+  --color-primary-foreground: var(--on-accent);
+  --color-secondary: var(--surface-2);
+  --color-secondary-foreground: var(--text);
+  --color-muted: var(--surface-2);
+  --color-muted-foreground: var(--text-muted);
+  --color-accent: var(--surface-selected);
+  --color-accent-foreground: var(--text);
+  --color-destructive: var(--outcome-error);
+  --color-border: var(--border-strong);
+  --color-input: var(--border-strong);
+  --color-ring: var(--focus-ring);
+}

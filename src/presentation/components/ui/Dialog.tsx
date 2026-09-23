@@ -1,8 +1,14 @@
-import { useEffect, useId, useRef } from 'react';
+import { useRef } from 'react';
 import type { ReactNode } from 'react';
 import { Button } from './Button';
+import {
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  Dialog as DialogRoot,
+  DialogTitle,
+} from './primitives/dialog';
 import { COMMON_BUTTONS } from '@shared/copy';
-import styles from './Dialog.module.scss';
 
 export interface DialogProps {
   readonly open: boolean;
@@ -17,8 +23,9 @@ export interface DialogProps {
 }
 
 /**
- * Modal dialog with focus trapping. Focus lands on the least destructive button,
- * Escape always cancels, and the backdrop never closes a destructive confirmation by accident.
+ * Confirmation dialog on the shadcn/Radix primitive. Focus lands on the least destructive
+ * button, Escape always cancels, and a tap on the backdrop never closes it, so a destructive
+ * confirmation cannot be dismissed (or confirmed) by accident.
  */
 export function Dialog({
   open,
@@ -30,70 +37,40 @@ export function Dialog({
   onConfirm,
   onCancel,
   children,
-}: DialogProps): React.JSX.Element | null {
-  const titleId = useId();
-  const descriptionId = useId();
-  const panelRef = useRef<HTMLDivElement>(null);
+}: DialogProps): React.JSX.Element {
   const cancelRef = useRef<HTMLButtonElement>(null);
-
-  useEffect(() => {
-    if (!open) return;
-    const previouslyFocused = document.activeElement;
-    cancelRef.current?.focus();
-
-    const onKeyDown = (event: KeyboardEvent): void => {
-      if (event.key === 'Escape') {
-        event.preventDefault();
-        onCancel();
-        return;
-      }
-      if (event.key !== 'Tab') return;
-      const panel = panelRef.current;
-      if (panel === null) return;
-      const focusable = panel.querySelectorAll<HTMLElement>(
-        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
-      );
-      const first = focusable[0];
-      const last = focusable[focusable.length - 1];
-      if (first === undefined || last === undefined) return;
-      if (event.shiftKey && document.activeElement === first) {
-        event.preventDefault();
-        last.focus();
-      } else if (!event.shiftKey && document.activeElement === last) {
-        event.preventDefault();
-        first.focus();
-      }
-    };
-
-    document.addEventListener('keydown', onKeyDown);
-    return () => {
-      document.removeEventListener('keydown', onKeyDown);
-      if (previouslyFocused instanceof HTMLElement) previouslyFocused.focus();
-    };
-  }, [open, onCancel]);
-
-  if (!open) return null;
+  // Radix hands focus back to a DialogTrigger; ours open from code, so remember the element.
+  const returnFocusRef = useRef<Element | null>(null);
 
   return (
-    <div className={styles.backdrop}>
-      <div
-        ref={panelRef}
-        className={styles.panel}
-        role="dialog"
-        aria-modal="true"
-        aria-labelledby={titleId}
-        aria-describedby={description === undefined ? undefined : descriptionId}
+    <DialogRoot
+      open={open}
+      onOpenChange={(next) => {
+        // Radix only asks to close: on Escape, since outside clicks are refused below.
+        if (!next) onCancel();
+      }}
+    >
+      <DialogContent
+        onOpenAutoFocus={(event) => {
+          event.preventDefault();
+          returnFocusRef.current = document.activeElement;
+          cancelRef.current?.focus();
+        }}
+        onCloseAutoFocus={(event) => {
+          event.preventDefault();
+          const previous = returnFocusRef.current;
+          if (previous instanceof HTMLElement && previous.isConnected) previous.focus();
+        }}
+        onInteractOutside={(event) => {
+          event.preventDefault();
+        }}
+        // Without a description Radix expects the attribute to be cleared explicitly.
+        {...(description === undefined ? { 'aria-describedby': undefined } : {})}
       >
-        <h2 id={titleId} className={styles.title}>
-          {title}
-        </h2>
-        {description !== undefined && (
-          <p id={descriptionId} className={styles.description}>
-            {description}
-          </p>
-        )}
+        <DialogTitle>{title}</DialogTitle>
+        {description !== undefined && <DialogDescription>{description}</DialogDescription>}
         {children}
-        <div className={styles.actions}>
+        <DialogFooter>
           <Button ref={cancelRef} variant="secondary" onClick={onCancel}>
             {cancelLabel}
           </Button>
@@ -102,8 +79,8 @@ export function Dialog({
               {confirmLabel}
             </Button>
           )}
-        </div>
-      </div>
-    </div>
+        </DialogFooter>
+      </DialogContent>
+    </DialogRoot>
   );
 }
